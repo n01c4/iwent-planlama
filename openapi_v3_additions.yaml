@@ -1,0 +1,76 @@
+# ========== iWent OpenAPI v3.0 ADDITIONS ==========
+# These endpoints should be added to iwent_openapi_v2.yaml
+# Total: 14 new endpoints + 3 new schemas
+
+# NEW ENDPOINTS
+
+## User Stories (5 endpoints)
+POST   /users/me/stories              # Create story
+GET    /users/me/stories              # Get my stories
+DELETE /users/me/stories/{storyId}   # Delete story
+GET    /users/{userId}/stories        # Get friend's stories
+POST   /stories/{storyId}/view        # Mark as viewed
+
+## Ticket Gifting (1 endpoint)
+POST   /tickets/{ticketId}/gift       # Gift ticket to friend
+
+## Venue Reviews (4 endpoints)
+POST   /venues/{id}/reviews           # Create review
+GET    /venues/{id}/reviews           # List reviews
+PATCH  /venues/reviews/{reviewId}     # Update my review
+DELETE /venues/reviews/{reviewId}     # Delete my review
+
+## Event Attachments (1 endpoint)
+GET    /events/{id}/attachments       # Get attachments
+
+## Discount Codes (2 endpoints)
+GET    /org/events/{eventId}/discount-codes/{codeId}  # Get code
+DELETE /org/events/{eventId}/discount-codes/{codeId}  # Delete code
+
+## Pricing Rules (1 endpoint)
+GET    /org/events/{id}/pricing-rules # List pricing rules
+
+## Natural Language Search (1 endpoint)
+POST   /search/natural                # AI-powered search
+
+# NEW SCHEMAS
+
+UserStory:
+  - id, userId, mediaUrl, mediaType (photo/video)
+  - thumbnailUrl, caption, location
+  - viewCount, taggedUsers, viewerList (friends only)
+  - createdAt, expiresAt (24h), isViewed
+
+VenueReview:
+  - id, venueId, user
+  - rating (1-5), title, content
+  - isVisible, createdAt, updatedAt
+
+PricingRule:
+  - id, eventId, name, description
+  - ruleType (early_bird, last_minute, etc.)
+  - adjustmentType (percentage, fixed), adjustmentValue
+  - validFrom, validUntil, priority, isActive
+
+# SCHEMA UPDATES
+
+User.preferences (JSONB):
+  + addressingStyle: "sen" | "siz"
+
+Ticket:
+  + gifted_by: UUID
+  + gifted_to: UUID
+  + gifted_at: timestamp
+  + gift_message: string
+
+Message:
+  + requires_reciprocation: boolean
+  + reciprocation_media_url: string
+
+# FULL YAML SPECS
+
+Detaylı request/response schema'ları için:
+- Plan file: ../../.claude/plans/elegant-sauteeing-bentley.md
+- PRD: iWent_Backend_PRD.md (Section 4)
+
+Bu endpoint'leri iwent_openapi_v2.yaml dosyasına OpenAPI 3.0 formatında ekleyin.

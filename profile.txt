@@ -1,0 +1,17 @@
+### Profile
+
+#### 1. Kullanıcı Profili Genel Bilgiler
+- *Profil Fotoğrafı*: Kullanıcının kendisini ifade edebileceği bir profil fotoğrafı ekleme seçeneği. Kullanıcılar kapak fotoğrafı ekleyemez.
+- *Kullanıcı Adı ve Biyografi*: Kullanıcı adı ve kısa bir biyografi.
+- *Etiketler ve İlgi Alanları*: Kullanıcının ilgi alanlarını belirtmesi ve etiketler eklemesi.
+
+#### 2. Etkinlik Geçmişi ve Katılımlar
+- *Katıldığı Etkinlikler*: Kullanıcının daha önce katıldığı etkinliklerin listesi ve değerlendirmeleri (sadece arkadaşlara açık).
+- *Yaklaşan Etkinlikler*: Kullanıcının kaydolduğu ve katılacağı etkinlikler (sadece arkadaşlara açık).
+- *Etkinlik Sonrası Anı Paylaşımı*: Kullanıcılar, etkinlik bittikten sonra fotoğraf yükleyebilir. Bu fotoğraflar 24 saat sonra kaybolur ve profil resmine tıklanarak "anı" formatında görüntülenebilir. Etiketleme sadece arkadaşlar arasında olabilir.
+
+#### 3. Profilin Tıklanabilirliği ve Dinamik Yapı
+- *Her Bilgi Tıklanabilir Olmalı*: Profildeki her bilgi tıklanabilir olmalıdır. Örneğin:
+  - *İlgi Alanları Etiketleri*: Etiketlere tıklayarak benzer ilgi alanına sahip kullanıcıları veya etkinlikleri görebilme (yalnızca arkadaş olan kullanıcılar profili görüntüleyebilir).
+  - *Geçmiş Etkinlikler*: Kullanıcının katıldığı ya da düzenlediği etkinliklere tıklayarak detaylarına ulaşma (yalnızca arkadaş olan kullanıcılar profili görüntüleyebilir).
+- *Profil Görüntüleme Kısıtlaması*: Kullanıcılar sadece ortak etkinliğe katıldıkları kullanıcıların profillerini görebilir. profil detaylarına da ulaşamazlar ama arkadaşlık isteği gönderebilirler.

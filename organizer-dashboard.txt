@@ -1,0 +1,53 @@
+### Organizer Management Panel
+
+#### 1. Etkinlik Yönetimi
+
+- **Etkinlik Oluşturma ve Düzenleme**: Organizasyon yapma sürecini kolaylaştırmak için organizatörler, etkinliklerini hızlı bir şekilde oluşturabilmeli ve düzenleyebilmelidir. Bunun için önceden tanımlanmış şablonlar ve otomatik olarak doldurulmuş form alanları sunulabilir. Örneğin, sık kullanılan etkinlik türleri için hazır formatlar ve geçmiş etkinlik bilgilerinden otomatik öneriler organizatörlere zaman kazandırabilir. Etkinlik başlığı, açıklama, konum, tarih ve saat gibi bilgileri girebilecekleri bir arayüz olmalı.
+- **Katılımcı Yönetimi**: Organizasyon sahipleri, etkinliklerine katılan kullanıcıları görebilmeli, katılımcılarla iletişim kurabilmeli ve özel notlar ekleyebilmelidir.
+- **Bilet Satış ve İzleme**: Bilet fiyatlandırmasını yapabilme, satış durumlarını izleme ve anlık satış raporları alabilme gibi işlevler olmalı. Böylece, bilet satışlarının nasıl ilerlediğini ve katılımcı ilgisini görebilirler.
+
+#### 2. Geri Bildirim ve İyileştirme Önerileri
+
+- **Geri Bildirim Toplama ve Analiz**: Organizasyon sonrasında katılımcılardan alınan geri bildirimleri görüntüleyebilme ve bu geri bildirimlere göre etkinliklerin kalitesini artırmaya yönelik öneriler alabilme. Bu geri bildirimler sadece organizatör tarafından görülebilir.
+- **LLM Destekli Öneriler**: İlerleyen aşamalarda, organizatörlere yapay zeka destekli öneriler sunularak etkinliklerin nasıl daha çekici ve başarılı hale getirilebileceği hakkında kişiselleştirilmiş analizler sağlanabilir. Bu öneriler, geri bildirimlerden, katılım verilerinden ve geçmiş etkinliklerin başarı oranlarından toplanan bilgilerle oluşturulacaktır. Örneğin, katılımcı geri bildirimleri, popüler etkinlik temaları veya sıkça tercih edilen zaman aralıkları gibi veriler analiz edilerek organizatörlere somut ve uygulanabilir öneriler sunulabilir.
+
+#### 3. Finansal Yönetim
+
+- **Gelir ve Gider Analizi**: Organizasyonların gelir ve giderlerini izleyebilme, bilet satışlarından elde edilen gelirleri ve etkinlik masraflarını görebilme.
+- **Mali Raporlama**: Organizatörlere her etkinlik sonrası mali raporlar sunulmalı. Gelir-gider dengesi ve kar/zarar analizi gibi veriler panelde kullanıcı dostu grafikler ve özetler şeklinde sunulmalı.
+
+#### 4. Katılımcı İletişimi ve Sosyalleşme
+
+- **Katılımcı İletişimi**: Organizasyon sahipleri, katılımcılarla doğrudan iletişim kurabilmeli. Sohbet gruplarını yönetme ve katılımcılara toplu mesaj gönderme gibi işlevlere sahip olmalı.
+- **Grup Sohbetleri Yönetimi**: Etkinliğe özel sohbet grubunun yönetimi organizatöre ait olmalı. Organizasyon sahipleri, katılımcıların grup davranışlarını yönetmek için çeşitli araçlara sahip olmalıdır. Bu araçlar arasında katılımcıları sessize alma, belirli mesajları kaldırma, grup sohbetine erişimi kısıtlama veya gerektiğinde katılımcıları sohbet grubundan çıkarma seçenekleri bulunmalıdır. Bu yönetim özellikleri, grup etkileşimlerini düzenleyerek pozitif bir iletişim ortamı oluşturmayı hedefler. Katılımcıların gruptaki davranışlarını denetleme ve gerektiğinde gruptan çıkarma yetkisi olmalı.
+
+#### 5. Pazarlama ve Promosyon Araçları
+
+
+
+- **Promosyon Kodları ve İndirimler**: Organizasyon sahipleri etkinliklerinde promosyon kodları ve indirimler tanımlayarak katılımcıları teşvik edebilmeli. Ve iwent de küçük organizatörlere yardımcı olup bunu teşvik etmeli.
+- **Etkinlik Tanıtımı**: Organizatörlere, etkinliklerini öne çıkarma ve daha geniş kitlelere duyurma seçenekleri sunulmalı. Bu, ücretli reklamlar veya özel kampanyalar şeklinde olabilir.
+
+#### 6. Güvenlik ve Uygunluk Yönetimi
+
+- **Katılımcı Onaylama**: Özellikle belirli bir yaş sınırlaması veya özel koşulu olan etkinliklerde organizatörler, katılımcıların uygunluğunu onaylayabilmeli.
+- **Güvenlik Standartları ve Rehberlik**: Etkinliklerde uyulması gereken güvenlik standartları hakkında rehber dokümanlar ve organizatörlere eğitimler sunulmalı.
+
+#### 7. Organizasyon İstatistikleri ve Analiz Araçları
+
+- **Etkinlik İstatistikleri**: Katılım oranları, katılımcı profilleri, geri dönüş oranları gibi istatistikler organizatörlere sunulmalı. Bu, organizasyonların başarısını değerlendirmelerine yardımcı olabilir.
+- **Yapay Zeka Destekli Öneriler**: LLM (Large Language Model) destekli analizler ile organizatörlere, etkinliklerinin hangi noktalarının iyileştirilmesi gerektiği, geçmiş etkinliklerde neyin daha iyi çalıştığı gibi bilgileri sunarak daha verimli organizasyonlar düzenlemelerine yardımcı olunabilir.
+
+#### 8. Eğitim ve Rehberlik
+
+- **Organizatör Rehberi**: Yeni organizatörler için detaylı bir rehber, eğitim videoları ve sıkça sorulan sorular bölümü olmalı. Bu rehberler, etkinlik planlamadan bilet satışına kadar tüm süreçlerde organizatörlere destek sağlayabilir.
+
+#### 9. Topluluk Yönetimi
+
+- **Katılımcı Etkileşim Yönetimi**: Etkinlik sırasında ve sonrasında katılımcılar arasındaki etkileşimi analiz edebilme ve bu etkileşimlere göre bir sonraki etkinliği daha iyi planlama. Örneğin, sohbet grubunda en çok ilgi çeken konular, katılımcıların sorduğu sorular gibi verileri inceleme.
+- **Topluluk Kuralları ve Moderasyon**: Organizasyon sahibinin etkinliğe özel topluluk kuralları belirleyebilmesi ve gerektiğinde bu kuralları ihlal eden katılımcılara müdahale edebilmesi.
+
+#### 10. Kullanıcı Dostu Arayüz ve Erişilebilirlik
+
+- **Basit ve Kullanıcı Dostu Tasarım**: Organizasyon sürecinin karmaşık olmaması için yönetim paneli basit ve sezgisel bir kullanıcı arayüzüne sahip olmalı. Tüm işlevler net ve anlaşılır şekilde gruplanmalı.
+- **Mobil Uyumluluk**: Yönetim panelinin mobil cihazlar üzerinden de etkin bir şekilde kullanılabilmesi sağlanmalı. Özellikle anlık bildirimler, gerçek zamanlı sohbet yönetimi ve kolay bilet satış takibi gibi mobil öncelikli işlevler optimize edilmelidir. Ayrıca, mobilde kullanıcı dostu tasarım için basit ve dokunmatik uyumlu arayüzler geliştirilerek, organizatörlerin her yerden etkinliklerini rahatça yönetmeleri sağlanmalıdır. bu da organizatörlerin her yerden etkinlik yönetimi yapabilmelerine olanak tanır.

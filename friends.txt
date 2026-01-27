@@ -1,0 +1,33 @@
+Arkadaşlarım
+
+Önerilen Arkadaşlarım Sekmesi Tasarımı
+
+1. Ana Görünüm ve Arkadaş Listesi
+
+Arkadaş Listesi: Kullanıcıların eklediği ve kabul ettiği arkadaşların listesi bu ekranda yer almalı. Her bir arkadaşın yanında profil fotoğrafı, kullanıcı adı ve durum bilgisi bulunmalı.
+
+Arama ve Filtreleme: Kullanıcılar, arkadaş listelerinde kolayca arama yapabilmeli ve arkadaşlarını alfabetik sıraya, son eklenenlere veya etkinlik katılım durumuna göre filtreleyebilmelidir.
+
+2. Arkadaş Ekleme ve İstek Yönetimi
+
+Arkadaş Ekleme ve İstek Gönderme: Kullanıcılar, etkinlik sohbet gruplarında veya ortak arkadaşlar aracılığıyla yeni arkadaş ekleyebilir. Her eklenen arkadaş, karşılıklı onaydan sonra arkadaş listesine eklenir.
+
+Arkadaş İstekleri: Kullanıcılar, aldıkları arkadaşlık isteklerini bu sekmeden yönetebilir. Gelen ve gönderilen istekler ayrı olarak listelenmeli ve kullanıcılar bu istekleri kabul veya reddedebilmelidir.
+
+3. Arkadaş Profili ve Etkileşimler
+
+Profil Görüntüleme: Kullanıcılar, arkadaşlarının profil fotoğrafına tıklayarak profillerini görüntüleyebilir ve etkinlik geçmişleri, ilgi alanları gibi bilgileri görebilirler. Bu özellik yalnızca karşılıklı olarak arkadaş olan kullanıcılar için geçerlidir.
+
+Arkadaşlarla İletişim: Kullanıcılar, arkadaşlarıyla birebir sohbet başlatabilir. Arkadaş listesi üzerinden mesaj gönderme veya arama yapma seçenekleri sunulmalıdır.
+
+4. Etkileşim ve Arkadaşlık Yönetimi
+
+Arkadaş Silme ve Engelleme: Kullanıcılar, artık iletişim kurmak istemedikleri arkadaşlarını listelerinden silebilir veya engelleyebilir. Engellenen kişiler, kullanıcının profilini ve etkinliklerini göremez ve onlarla iletişime geçemez.
+
+
+
+5. Etkinlik ve Arkadaş Etkileşimleri
+
+Bilet Hediye Etme: Kullanıcılar, arkadaşlarına etkinlik bileti hediye edebilirler. Bu özellik, arkadaşların birbirine sürpriz yapmasını veya etkinliğe katılmalarını teşvik etmek için kullanılabilir.
+
+Etiketleme ve Anı Paylaşımı: Kullanıcılar, arkadaşlarını etkinlik sonrası anı fotoğraflarında etiketleyebilirler. Bu özellik, sadece karşılıklı arkadaş olan kullanıcılar arasında geçerlidir.

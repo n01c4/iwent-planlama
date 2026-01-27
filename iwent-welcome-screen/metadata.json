@@ -1,0 +1,5 @@
+{
+  "name": "iWent Welcome Screen",
+  "description": "A visually stunning mobile-first welcome screen for the iWent app, featuring a background slideshow, animated typography, and a modern aesthetic with Tailwind CSS.",
+  "requestFramePermissions": []
+}

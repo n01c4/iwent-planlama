@@ -1,0 +1,32 @@
+**1. Ana Görünüm: Basit ve Kullanıcı Dostu Tasarım**
+
+- **Sohbet Listesi**: Kullanıcının katıldığı etkinliklere ve arkadaşlarına dayalı sohbet gruplarının ve birebir sohbetlerin listesi bu ekranda yer almalı. Sohbetler son mesajlara göre sıralanmalı ve her sohbetin yanında bir etkinlik simgesi veya arkadaş profili resmi bulunmalı.
+- **Kategorilere Ayırma**: Sohbetler, "Etkinlik Sohbetleri" ve "Arkadaş Sohbetleri" olarak iki kategoriye ayrılabilir. Kullanıcılar bu kategoriler arasında kolayca geçiş yapabilmeli.
+- **Arama Çubuğu**: Kullanıcıların sohbetler arasında hızlıca arama yapabilmesi için bir arama çubuğu eklenmeli. Bu sayede, eski sohbetleri veya belirli etkinliklerle ilgili konuşmaları kolayca bulabilirler.
+
+**2. Sohbet Detayları ve Mesajlaşma Arayüzü**
+
+- **Grup Sohbeti ve Birebir Sohbet**: Kullanıcılar, etkinliklerle ilgili grup sohbetlerine katılabilir veya arkadaşlarıyla birebir sohbet başlatabilir. Sohbet grubu içerisinde arkadaş ekleme butonu veya profillerine tıklayarak arkadaşlık isteği gönderebilme imkanı olmalı.
+- **Etkinlik Bağlantıları**: Sohbet içerisinde, etkinlikle ilgili detaylara hızlıca ulaşmak için bir bağlantı eklenebilir. Böylece, kullanıcılar etkinlik hakkında bilgi almak istediklerinde kolayca erişebilirler.
+
+**3. Bildirimler ve Etkileşimler**
+
+- **Yeni Mesaj Bildirimleri**: Kullanıcıların yeni mesaj aldıklarında bildirim alması sağlanmalı. Bu bildirimler hem uygulama içi hem de push bildirim olarak sunulmalı.
+- **Özel Etkileşimler**: Kullanıcılar sohbetlerde mesajları beğenebilir, emoji tepkileri verebilir veya mesajları yanıtlayabilir. Bu, etkileşimi artırır ve sohbetlerin daha eğlenceli hale gelmesini sağlar.
+
+
+
+**5. Medya Paylaşımı ve Özel Medya Görüntüleme Özelliği**
+
+- **Medya Gönderme ve Görüntüleme**: Kullanıcılar sohbetlerde medya ögeleri (fotoğraf, video vb.) gönderebilir. Eğer kullanıcı, medyayı gönderirken "karşılık bekle" özelliğini aktif ederse, medyayı gönderdikleri kişiler (arkadaş veya grup üyeleri) bu medyayı görebilmek için önce kendileri bir medya ögesi paylaşmak zorunda olacak. Eğer medya alıcıları, medyayı görebilmek için tekrar bu özelliği kullanarak medya gönderirse, bu sefer ilk medyayı gönderen kullanıcı da bu medyayı görüntüleyebilmek için yeniden bir medya paylaşmak zorunda kalacak. Bu özellik, sadece medya ögeleri için kullanılabilir ve tamamen kullanıcının isteğine bağlı olarak etkinleştirilebilecektir. Özellik, mesaj kutusunun yanındaki simgelerden biri olarak sunulacak.
+
+**6. Sohbet Geçmişi ve Silme Seçenekleri**
+
+- **Sohbet Geçmişine Erişim**: Kullanıcılar, geçmiş mesajlarına kolayca erişebilir ve belirli bir sohbette arama yapabilirler. Bu, etkinlikler veya arkadaşlarla yapılan konuşmalarda önemli bilgileri bulmayı kolaylaştırır.
+- **Sohbet Silme ve Arşivleme**: Kullanıcılar, istemedikleri sohbetleri arşivleyebilir veya tamamen silebilirler. Bu seçenekler, kullanıcının sohbet listesini düzenli tutmasına yardımcı olur.
+
+**7. Mobil ve Masaüstü Uyumluluk**
+
+- **Platformlar Arası Kullanım**: Sohbetlerim sekmesi hem mobil hem de masaüstü platformlarda sorunsuz çalışmalı. Bu, kullanıcıların her yerden etkinliklerine ve arkadaşlarına bağlı kalmalarını sağlar.
+
+Bu tasarım önerisi, kullanıcıların etkinliklerle ve arkadaşlarıyla iletişim kurmasını kolaylaştıracak, basit ve kullanımı rahat bir arayüz sunmayı hedefliyor. Sohbetlerin kategorilere ayrılması, bildirimlerin kullanıcılara anında ulaşması ve yapay zeka destekli mesaj revizyonu gibi özellikler, kullanıcıların iletişim deneyimini daha anlamlı ve etkili hale getirebilir.

@@ -1,0 +1,28 @@
+# Ayarlar
+
+## Önerilen Ayarlar Tasarımı
+
+### 1. Bildirim Ayarları
+
+- **Push Bildirimleri**: Etkinlik hatırlatmaları, yeni mesajlar ve yaklaşan etkinliklerle ilgili bildirimleri açıp kapatma imkanı.
+- **E-posta Bildirimleri**: Kullanıcılar, hangi durumlarda e-posta bildirimi almak istediklerini (örneğin, yeni etkinlik önerileri, etkinlik iptalleri) seçebilir.
+
+### 2. Dil ve Bölge Ayarları
+
+- **Dil Seçimi**: Kullanıcı, uygulamanın dilini seçerek uygulamayı en rahat hissettiği dilde kullanabilir.
+- **Zaman Dilimi**: Kullanıcıların etkinlikleri kendi bulundukları zaman dilimine göre görmelerini sağlayan bir zaman dilimi ayarı sunulmalıdır.
+
+### 3. Güvenlik Ayarları
+
+- **Şifre Değiştirme ve İki Adımlı Doğrulama**: Kullanıcılar, hesap güvenliğini artırmak için şifrelerini değiştirebilir ve iki adımlı doğrulamayı etkinleştirebilir.
+- **Hesap Aktivitesi**: Kullanıcılar, hesaplarına hangi cihazlardan ve ne zaman giriş yapıldığını görebilmeli ve şüpheli bir durumda hesaplarını korumak için gerekli önlemleri alabilmelidir.
+
+### 4. Hesap Yönetimi
+
+- **Hesap Bilgileri Güncelleme**: Kullanıcı adı, e-posta adresi ve şifre gibi temel bilgilerin değiştirilmesi mümkündür.
+- **Hesabı Geçici Olarak Dondurma veya Silme**: Kullanıcılar, hesaplarını geçici olarak dondurabilir veya tamamen silebilir. Dondurma işlemi, kullanıcının verilerini koruyarak sadece aktifliğini durdurmasını sağlar.
+
+### 5. Kişiselleştirme Ayarları
+
+- **Tema ve Görünüm**: Kullanıcı, uygulamanın temasını (örneğin, açık veya koyu tema) ve genel görünüm ayarlarını değiştirebilir.
+- **Kullanıcıya Hitap Şekli**: Kullanıcının kaydolurken belirlediği hitap şekli, uygulama içerisindeki tüm mesajlarda nasıl hitap edileceğini belirler. Kullanıcı bu tercihini ayarlardan değiştirebilir.

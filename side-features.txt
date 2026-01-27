@@ -1,0 +1,4 @@
+8. **Event Exploration and Search**
+
+   - Users can search for events using natural language-based search, aided by filters such as "Events Near Me," "Organizer Rating," "Location," "Event Type," and "Date."
+   - The search aims to be intuitive, allowing users to easily find events that match their interests without complicated filtering processes.

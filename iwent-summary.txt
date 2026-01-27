@@ -1,0 +1,43 @@
+iwent: İleri Seviye Etkinlik Katılım ve Sosyal Deneyim Platformu
+
+iwent, etkinlik katılımını ve sosyal etkileşimi geliştirmek amacıyla tasarlanmış ileri seviye bir mobil etkinlik biletleme platformudur. Platformun ana hedefi, katılımcılar arasında kolektif deneyimleri teşvik ederek anlamlı bağlantılar kurmak ve sosyal uyumu artırmaktır. Bu amaca ulaşmak için iwent, etkinlik özelinde sohbet grupları ve topluluk oluşturma araçları sunarak, kullanıcıların etkinlik öncesinde ve sonrasında iletişim kurmalarını sağlar. Böylece kullanıcılar, etkinlik sürecini daha anlamlı ve zengin bir hale getirebilirler. iwent, etkinlik deneyimlerini yalnızca bir katılım sürecinden öte, kullanıcılar için güçlü sosyal bağların kurulabileceği, yeni dostlukların ve toplulukların oluşabileceği bir süreç haline getirir.
+
+Ana Özellikler
+
+1. Profil Yönetimi
+
+Kullanıcılar, iwent'te kendilerine ait detaylı profiller oluşturabilir ve yönetebilir. Bu profiller, kişisel bilgiler, ilgi alanları ve geçmiş etkinlik katılımlarını içerir. Kullanıcılar, profillerini isteğe göre özelleştirerek etkinliklere dair tercihlerini belirleyebilir ve görünürlük ayarlarını yapılandırabilir. Ayrıca, profilde bulunan Organizatör Ol butonuyla, kullanıcılar organizatör olarak etkinlik düzenleme sürecini başlatabilirler. Kullanıcılar, etkinlik düzenleyerek topluluklarını genişletebilir ve yeni etkinliklere liderlik edebilir, böylece sosyal etkilerini artırabilirler.
+
+2. Geri Bildirim Mekanizması
+
+Kullanıcılar, katıldıkları etkinliklerle ilgili geri bildirimlerini organizatörlerle paylaşabilirler. Bu geri bildirimler sadece organizatörler tarafından görülebilir, böylece etkinliklerin kalitesi arttırılabilir ve katılımcıların geri dönüşleri değerlendirilebilir. Bu mekanizma, gelecekteki etkinliklerin daha başarılı ve katılımcı odaklı olmasına yardımcı olur. Kullanıcılar, olumlu geri bildirimlerle organizatörleri motive ederken, geliştirilmesi gereken alanları işaretleyerek etkinliklerin kalitesine doğrudan katkıda bulunurlar. Organizasyon sahipleri, bu geri bildirimler sayesinde sürekli gelişim göstererek daha başarılı etkinlikler düzenleyebilirler.
+
+3. Arkadaşlık ve Sosyal Etkileşim
+
+Kullanıcılar, etkinlik sohbet gruplarındaki diğer katılımcılarla arkadaşlık kurabilir ve özel sohbetler başlatabilirler. Bu sayede etkinliklerde tanıştıkları kişilerle etkinlik sonrasında da iletişimde kalabilirler. Aynı zamanda kullanıcılar, etkinlik sonrası yaşanan güzel anıları paylaşmak için fotoğraflar yükleyebilir ve arkadaşlarını bu anılarda etiketleyebilirler. Bu fotoğraflar, 24 saat sonra kaybolacak şekilde ayarlanmıştır. Bu özellik, kullanıcıların etkinlik sonrası bağlarını korumalarına ve sosyal etkileşimlerin sürdürülmesine yardımcı olur. Kullanıcıların bu paylaşımlar yoluyla birbirlerine daha yakın hissetmeleri ve sosyal çevrelerini genişletmeleri hedeflenmiştir.
+
+4. Etkinlik Arama ve Keşif
+
+Kullanıcılar, coğrafi konum, etkinlik türü, tarih ve organizatör değerlendirmelerine göre etkinlikleri keşfedebilir ve arayabilirler. Arama süreci, doğal dil işleme (NLP) tabanlı arama özelliği sayesinde kullanıcıların kolay ve sezgisel bir şekilde etkinlik bulmasını sağlar. Etkinlik detay sayfasında, katılımcıların etkinlik hakkındaki yorumları ve organizatör bilgileri de yer alır. Kullanıcılar, bu detaylı bilgilerle etkinliğin kendileri için uygun olup olmadığını değerlendirebilirler. Ayrıca, etkinlik türüne veya geçmiş katılımcı değerlendirmelerine göre filtreleme yaparak, kendilerine en uygun etkinlikleri bulma şansını artırırlar. Bu süreç, kullanıcıların zamanlarını daha verimli kullanmalarını ve en keyif alacakları etkinlikleri seçmelerini sağlar.
+
+5. Etkinlik Sohbet Grupları
+
+iwent, her etkinlik için özel sohbet grupları oluşturur. Kullanıcılar, etkinlik bileti aldıktan sonra bu grup sohbetlerine katılabilir, etkinlik öncesinde ve sonrasında diğer katılımcılarla etkileşimde bulunabilirler. Bu sohbetler, katılımcıların etkinlik deneyimini paylaşmasına ve etkinlikten önce bir bağ kurmasına olanak tanır. Bu özellik, etkinliğe katılan herkesin bir topluluk duygusu geliştirmesini ve etkinliklerin sosyal boyutunun daha güçlü hale gelmesini sağlar. Kullanıcılar, etkinlik öncesinde bilgi alışverişi yapabilir, etkinlik sırasında ortak anılar biriktirebilir ve sonrasında bu bağı sürdürebilirler. Bu sayede etkinlikler, anlık bir deneyim olmaktan çıkar ve katılımcılar arasında uzun vadeli dostlukların filizlenmesine olanak tanır.
+
+
+
+7. Gizlilik ve Ekran Kullanımı Farkındalığı
+
+iwent, kullanıcılarına zaman zaman ekran süresi hatırlatmaları yaparak, dijital dünyanın dışında da vakit geçirmelerini teşvik eder. Bu hatırlatmalar, kullanıcının uygulamada uzun süre geçirmesi durumunda görünür ve kullanıcının dengeli bir dijital yaşam sürmesine destek olur. Ayrıca, giriş sırasında kullanıcıdan "Ekrana baktığımın farkındayım" kutucuğunu işaretlemesi istenir, bu da dijital farkındalık yaratmayı amaçlar. iwent, kullanıcılarının dijital yaşamları ile fiziksel yaşamları arasında bir denge kurmalarını ve ekran süresini azaltmalarını teşvik eder. Kullanıcıların gerçek hayatta daha fazla zaman geçirmelerini ve anlamlı anılar biriktirmelerini hedefleyen bu özellik, sağlıklı bir yaşam tarzını destekler.
+
+iwent'in Felsefesi ve Değerleri
+
+iwent, sosyal etkileşimlerin, dostlukların ve anlamlı bağlantıların temel değerler olduğuna inanır. Günümüzde insanların arkadaşlık ilişkilerine yeterli özeni göstermediğini ve bu ilişkilerde dürüstlük, nezaket ve anlayışın eksik olduğunu gözlemleyen iwent ekibi, bu durumu değiştirmek için yola çıkmıştır. iwent, kullanıcılarına sadece etkinliklere katılma fırsatı sunmaz, aynı zamanda doğru sosyal etkileşimleri, gerçek dostlukları ve anlamlı anıları biriktirmeleri için ilham verir. Bu amaçla, kullanıcıların birbirlerine karşı daha anlayışlı, nazik ve dürüst olmalarını teşvik eder ve bu değerleri yaygınlaştırmak için çaba gösterir.
+
+iwent, insanların sadece görerek değişebileceğine ve pozitif sosyal etkileşimlerin örnek olarak gösterilmesi gerektiğine inanır. Platform, kullanıcılarına "ekrana bakma, iwent dahi olsa" felsefesiyle hareket etmelerini ve anı, anlam ve en önemlisi dost biriktirmelerini öğütler. Bu felsefe, kullanıcıların sadece dijital bağlantılar değil, aynı zamanda fiziksel dünyada da gerçek ve anlamlı ilişkiler kurmalarını sağlamayı hedefler. iwent, sosyal etkileşimlerin gücüne inanır ve kullanıcılarının hayatlarında olumlu değişimler yaratmak için bu gücü kullanmayı amaçlar.
+
+Hangi Sorunları Çözüyor?
+
+Sosyal Bağlantı Eksikliği: Günümüzde birçok insan, etkinliklere katılsa da diğer katılımcılarla anlamlı bağlar kurmakta zorlanıyor. iwent, etkinlik sohbet grupları ve arkadaşlık özellikleri ile katılımcılar arasında güçlü bağlar kurulmasını sağlıyor. Etkinlik öncesi ve sonrasında sağlanan bu etkileşimler, kullanıcıların daha fazla sosyalleşmesine ve etkinliklerin birer topluluk deneyimine dönüşmesine yardımcı oluyor.
+
+Etkinlik Öncesi ve Sonrası İletişim Eksikliği: Etkinliklerde tanışılan kişilerle iletişimde kalmak çoğu zaman zor olabilir. iwent, etkinlik öncesinde ve sonrasında sohbet grupları ile kullanıcıların birbirleriyle etkileşimde kalmalarını kolaylaştırır. Bu sayede, etkinlikler bir anlık deneyim olmaktan çıkar ve uzun süreli dostluklara dönüşebilir. Kullanıcılar, etkinlik sonrasında da bu sohbet gruplarını kullanarak bağlantılarını sürdürebilirler

@@ -1,0 +1,2401 @@
+openapi: 3.0.3
+info:
+  title: iWent API
+  version: "2.0.0"
+  description: |
+    REST API for the iWent event ticketing platform.
+    
+    ## Features
+    - Event discovery and ticketing
+    - Artist and venue profiles
+    - Social features (friends, likes, chat)
+    - Organizer tools and analytics
+    - AI-powered content generation
+
+servers:
+  - url: https://api.iwent.com.tr/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Local
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Tokens:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+      required: [accessToken, refreshToken]
+
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        name: { type: string }
+        city: { type: string }
+        role: { type: string, enum: [public, user, organizer, admin] }
+        avatarUrl: { type: string, format: uri }
+        bio: { type: string }
+        preferences: { type: object }
+      required: [id, email, role]
+
+    UserSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        avatarUrl: { type: string, format: uri }
+      required: [id, name]
+
+    Venue:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        city: { type: string }
+        address: { type: string }
+        latitude: { type: number }
+        longitude: { type: number }
+        capacity: { type: integer }
+        profilePhotoUrl: { type: string, format: uri }
+        coverPhotoUrl: { type: string, format: uri }
+        photos: { type: array, items: { type: string, format: uri } }
+        amenities: { type: array, items: { type: string } }
+        socialLinks: { type: object }
+        isVerified: { type: boolean }
+      required: [id, name, city]
+
+    VenueSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        city: { type: string }
+        slug: { type: string }
+        profilePhotoUrl: { type: string, format: uri }
+      required: [id, name]
+
+    Artist:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug: { type: string }
+        bio: { type: string }
+        genre: { type: string }
+        profilePhotoUrl: { type: string, format: uri }
+        coverPhotoUrl: { type: string, format: uri }
+        photos: { type: array, items: { type: string, format: uri } }
+        socialLinks: { type: object }
+        followerCount: { type: integer }
+        upcomingEventCount: { type: integer }
+        isVerified: { type: boolean }
+        isFollowing: { type: boolean }
+      required: [id, name]
+
+    ArtistSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug: { type: string }
+        profilePhotoUrl: { type: string, format: uri }
+        genre: { type: string }
+      required: [id, name]
+
+    Event:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        title: { type: string }
+        description: { type: string }
+        startDate: { type: string, format: date-time }
+        endDate: { type: string, format: date-time }
+        venue: { $ref: '#/components/schemas/VenueSummary' }
+        artists: { type: array, items: { $ref: '#/components/schemas/ArtistSummary' } }
+        category: { type: string }
+        bannerUrl: { type: string, format: uri }
+        photos: { type: array, items: { type: string, format: uri } }
+        priceMin: { type: number }
+        priceMax: { type: number }
+        currency: { type: string, default: TRY }
+        status: { type: string, enum: [draft, published, unpublished, cancelled] }
+        likeCount: { type: integer }
+        isLiked: { type: boolean }
+      required: [id, title, startDate]
+
+    TicketType:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        price: { type: number }
+        currency: { type: string, default: TRY }
+        capacity: { type: integer }
+        availableCount: { type: integer }
+        description: { type: string }
+        isActive: { type: boolean }
+      required: [id, name, price, capacity]
+
+    Order:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        status: { type: string, enum: [pending, confirmed, failed, cancelled] }
+        amount: { type: number }
+        currency: { type: string }
+        items: { type: array, items: { type: object } }
+        createdAt: { type: string, format: date-time }
+      required: [id, status, amount, currency]
+
+    Ticket:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        eventId: { type: string, format: uuid }
+        ticketTypeId: { type: string, format: uuid }
+        status: { type: string, enum: [RESERVED, CONFIRMED, CANCELLED] }
+        qrCode: { type: string }
+      required: [id, eventId, ticketTypeId, status]
+
+    Friendship:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        user: { $ref: '#/components/schemas/UserSummary' }
+        status: { type: string, enum: [pending, accepted, rejected, blocked] }
+        createdAt: { type: string, format: date-time }
+      required: [id, user, status]
+
+    FriendRequest:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        fromUser: { $ref: '#/components/schemas/UserSummary' }
+        message: { type: string }
+        createdAt: { type: string, format: date-time }
+      required: [id, fromUser]
+
+    ChatRoom:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        type: { type: string, enum: [personal, group, support, event] }
+        eventId: { type: string, format: uuid }
+        unreadCount: { type: integer }
+      required: [id, name, type]
+
+    Message:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        chatId: { type: string, format: uuid }
+        senderId: { type: string, format: uuid }
+        sender: { $ref: '#/components/schemas/UserSummary' }
+        content: { type: string }
+        createdAt: { type: string, format: date-time }
+      required: [id, chatId, senderId, content, createdAt]
+
+    DiscountCode:
+      type: object
+      properties:
+        code: { type: string }
+        type: { type: string, enum: [percentage, amount] }
+        value: { type: number }
+        maxUses: { type: integer }
+        expiresAt: { type: string, format: date-time }
+      required: [code, type, value]
+
+    AnalyticsOverview:
+      type: object
+      properties:
+        totalRevenue: { type: number }
+        ticketsSold: { type: integer }
+        activeEvents: { type: integer }
+        avgTicketPrice: { type: number }
+
+    Notification:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string }
+        title: { type: string }
+        body: { type: string }
+        status: { type: string, enum: [unread, read] }
+        createdAt: { type: string, format: date-time }
+      required: [id, type, title, status]
+
+    Health:
+      type: object
+      properties:
+        status: { type: string }
+        uptime: { type: number }
+      required: [status]
+
+paths:
+  # ========== AUTH ==========
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+                name: { type: string }
+                city: { type: string }
+              required: [email, password]
+      responses:
+        '200':
+          description: Tokens
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tokens' }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+              required: [email, password]
+      responses:
+        '200':
+          description: Tokens
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tokens' }
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+              required: [refreshToken]
+      responses:
+        '200':
+          description: New tokens
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tokens' }
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Logged out }
+
+  /auth/password/forgot:
+    post:
+      tags: [Auth]
+      summary: Start password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+              required: [email]
+      responses:
+        '200': { description: Reset email sent }
+
+  /auth/password/reset:
+    post:
+      tags: [Auth]
+      summary: Complete password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string }
+                password: { type: string }
+              required: [token, password]
+      responses:
+        '200': { description: Password updated }
+
+  /auth/verify/email:
+    post:
+      tags: [Auth]
+      summary: Verify email code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code: { type: string }
+              required: [code]
+      responses:
+        '200': { description: Verified }
+
+  # ========== USERS ==========
+  /users/me:
+    get:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: Current user profile
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+    patch:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: Update profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200': { description: Updated }
+
+  /users/me/tickets:
+    get:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: User tickets
+      responses:
+        '200':
+          description: Tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Ticket' }
+
+  /users/me/orders:
+    get:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: User orders
+      responses:
+        '200':
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Order' }
+
+  /users/me/notifications:
+    get:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: User notifications
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string, enum: [unread, all] }
+      responses:
+        '200':
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Notification' }
+    post:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: Mark notifications read
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids: { type: array, items: { type: string } }
+                all: { type: boolean }
+      responses:
+        '200': { description: Updated }
+
+  /users/me/calendar:
+    get:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: User calendar
+      responses:
+        '200': { description: Calendar events }
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      summary: Get user public profile
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserSummary' }
+
+  # ========== SOCIAL - LIKES ==========
+  /users/me/likes:
+    get:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Liked events
+      responses:
+        '200':
+          description: Liked events
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+    post:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Like event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId: { type: string, format: uuid }
+              required: [eventId]
+      responses:
+        '200': { description: Liked }
+
+  /users/me/likes/{eventId}:
+    delete:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Unlike event
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Removed }
+
+  # ========== SOCIAL - FRIENDS ==========
+  /users/me/friends:
+    get:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Get friends list
+      parameters:
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Friends list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Friendship' }
+
+  /users/me/friends/requests:
+    get:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Get friend requests
+      parameters:
+        - in: query
+          name: type
+          schema: { type: string, enum: [received, sent], default: received }
+      responses:
+        '200':
+          description: Friend requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FriendRequest' }
+    post:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Send friend request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId: { type: string, format: uuid }
+                message: { type: string }
+              required: [userId]
+      responses:
+        '200':
+          description: Request sent
+
+  /users/me/friends/requests/{requestId}:
+    post:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Respond to friend request
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: { type: string, enum: [accept, reject] }
+              required: [action]
+      responses:
+        '200': { description: Processed }
+
+  /users/me/friends/{friendId}:
+    delete:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Remove friend
+      parameters:
+        - in: path
+          name: friendId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Removed }
+
+  /users/me/friends/{userId}/block:
+    post:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Block user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Blocked }
+
+  /users/me/blocked:
+    get:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Get blocked users
+      responses:
+        '200':
+          description: Blocked users
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/UserSummary' }
+
+  /users/me/blocked/{userId}:
+    delete:
+      tags: [Social]
+      security: [{ bearerAuth: [] }]
+      summary: Unblock user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Unblocked }
+
+  # ========== CHATS ==========
+  /users/me/chats:
+    get:
+      tags: [Chats]
+      security: [{ bearerAuth: [] }]
+      summary: List user chats
+      responses:
+        '200':
+          description: Chats
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ChatRoom' }
+
+  /users/me/chats/{chatId}/messages:
+    get:
+      tags: [Chats]
+      security: [{ bearerAuth: [] }]
+      summary: Messages in chat
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: cursor
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50 }
+      responses:
+        '200':
+          description: Messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Message' }
+    post:
+      tags: [Chats]
+      security: [{ bearerAuth: [] }]
+      summary: Send message
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content: { type: string }
+              required: [content]
+      responses:
+        '200':
+          description: Sent
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Message' }
+
+  /users/me/chats/{chatId}/read:
+    post:
+      tags: [Chats]
+      security: [{ bearerAuth: [] }]
+      summary: Mark chat as read
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Updated }
+
+  # ========== DISCOVERY ==========
+  /search:
+    get:
+      tags: [Discovery]
+      summary: Search events, artists, venues
+      parameters:
+        - in: query
+          name: query
+          schema: { type: string }
+        - in: query
+          name: type
+          schema: { type: string, enum: [events, artists, venues, all], default: all }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: dateFrom
+          schema: { type: string, format: date }
+        - in: query
+          name: dateTo
+          schema: { type: string, format: date }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items: { $ref: '#/components/schemas/Event' }
+                  artists:
+                    type: array
+                    items: { $ref: '#/components/schemas/Artist' }
+                  venues:
+                    type: array
+                    items: { $ref: '#/components/schemas/Venue' }
+
+  /recommendations/discovery:
+    get:
+      tags: [Discovery]
+      summary: Discovery feed
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Discovery events
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+
+  # ========== EVENTS ==========
+  /events:
+    get:
+      tags: [Events]
+      summary: List events
+      parameters:
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: artistId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: venueId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: dateFrom
+          schema: { type: string, format: date }
+        - in: query
+          name: dateTo
+          schema: { type: string, format: date }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+
+  /events/{id}:
+    get:
+      tags: [Events]
+      summary: Event detail by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Event
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Event' }
+
+  /events/slug/{slug}:
+    get:
+      tags: [Events]
+      summary: Event detail by slug
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Event
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Event' }
+
+  /events/{id}/ticket-types:
+    get:
+      tags: [Events]
+      summary: Ticket types for event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Ticket types
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TicketType' }
+
+  /events/{id}/media:
+    get:
+      tags: [Events]
+      summary: Event media
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Media }
+
+  /events/{id}/social:
+    get:
+      tags: [Events]
+      summary: Event social metadata
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Social data }
+
+  /events/{id}/attendees:
+    get:
+      tags: [Events]
+      security: [{ bearerAuth: [] }]
+      summary: Event attendees (friends only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Attendees
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/UserSummary' }
+
+  # ========== VENUES ==========
+  /venues:
+    get:
+      tags: [Venues]
+      summary: List venues
+      parameters:
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Venues
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Venue' }
+
+  /venues/{id}:
+    get:
+      tags: [Venues]
+      summary: Venue detail by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Venue
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Venue' }
+
+  /venues/slug/{slug}:
+    get:
+      tags: [Venues]
+      summary: Venue detail by slug
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Venue
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Venue' }
+
+  /venues/{id}/events:
+    get:
+      tags: [Venues]
+      summary: Events at venue
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: upcoming
+          schema: { type: boolean, default: true }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+
+  # ========== ARTISTS ==========
+  /artists:
+    get:
+      tags: [Artists]
+      summary: List artists
+      parameters:
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: genre
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Artist' }
+
+  /artists/{id}:
+    get:
+      tags: [Artists]
+      summary: Artist detail by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Artist
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Artist' }
+
+  /artists/slug/{slug}:
+    get:
+      tags: [Artists]
+      summary: Artist detail by slug
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Artist
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Artist' }
+
+  /artists/{id}/events:
+    get:
+      tags: [Artists]
+      summary: Artist events
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: upcoming
+          schema: { type: boolean, default: true }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+
+  /artists/{id}/follow:
+    post:
+      tags: [Artists]
+      security: [{ bearerAuth: [] }]
+      summary: Follow artist
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Followed }
+    delete:
+      tags: [Artists]
+      security: [{ bearerAuth: [] }]
+      summary: Unfollow artist
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Unfollowed }
+
+  /users/me/following/artists:
+    get:
+      tags: [Artists]
+      security: [{ bearerAuth: [] }]
+      summary: Get followed artists
+      responses:
+        '200':
+          description: Followed artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Artist' }
+
+  # ========== ORDERS ==========
+  /orders:
+    post:
+      tags: [Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Create order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId: { type: string, format: uuid }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ticketTypeId: { type: string, format: uuid }
+                      quantity: { type: integer }
+                    required: [ticketTypeId, quantity]
+                discountCode: { type: string }
+              required: [eventId, items]
+      responses:
+        '200':
+          description: Order created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Order' }
+
+  /orders/{id}:
+    get:
+      tags: [Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Get order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Order detail
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Order' }
+
+  /orders/{id}/confirm:
+    post:
+      tags: [Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Confirm order after payment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentIntentId: { type: string }
+      responses:
+        '200': { description: Confirmed }
+
+  # ========== TICKETS ==========
+  /tickets/{ticketId}:
+    get:
+      tags: [Tickets]
+      security: [{ bearerAuth: [] }]
+      summary: Ticket detail
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Ticket
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ticket' }
+
+  /tickets/{ticketId}/refund:
+    post:
+      tags: [Tickets]
+      security: [{ bearerAuth: [] }]
+      summary: Refund ticket
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+      responses:
+        '200': { description: Refund initiated }
+
+  # ========== PAYMENTS ==========
+  /payments/intent:
+    post:
+      tags: [Payments]
+      security: [{ bearerAuth: [] }]
+      summary: Create payment intent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId: { type: string, format: uuid }
+                method: { type: string, enum: [card, bank_transfer] }
+              required: [orderId, method]
+      responses:
+        '200':
+          description: Payment intent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  intentId: { type: string }
+                  clientSecret: { type: string }
+                  amount: { type: number }
+
+  /payments/webhook:
+    post:
+      tags: [Payments]
+      summary: Payment provider webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Received }
+
+  # ========== CALENDAR ==========
+  /calendar/feeds/ics:
+    get:
+      tags: [Calendar]
+      security: [{ bearerAuth: [] }]
+      summary: ICS calendar feed
+      responses:
+        '200':
+          description: ICS feed
+          content:
+            text/calendar:
+              schema:
+                type: string
+
+  # ========== ORGANIZER ==========
+  /org/profile:
+    get:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Organizer profile
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                type: object
+    patch:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Update organizer profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Updated }
+
+  /org/team:
+    get:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: List team members
+      responses:
+        '200':
+          description: Team
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+    post:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Add team member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                role: { type: string }
+              required: [email, role]
+      responses:
+        '200': { description: Added }
+
+  /org/team/{id}:
+    patch:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Update team member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Remove team member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Deleted }
+
+  # ========== ORGANIZER VENUES ==========
+  /org/venues:
+    get:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: List managed venues
+      responses:
+        '200':
+          description: Venues
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Venue' }
+    post:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Create venue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                city: { type: string }
+                address: { type: string }
+                capacity: { type: integer }
+                description: { type: string }
+              required: [name, city]
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Venue' }
+
+  /org/venues/{id}:
+    get:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Get venue
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Venue
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Venue' }
+    put:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Update venue
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Delete venue
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Deleted }
+
+  # ========== ORGANIZER ARTISTS ==========
+  /org/artists:
+    get:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: List managed artists
+      parameters:
+        - in: query
+          name: search
+          schema: { type: string }
+      responses:
+        '200':
+          description: Artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Artist' }
+    post:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Create artist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                bio: { type: string }
+                genre: { type: string }
+                profilePhotoUrl: { type: string }
+                socialLinks: { type: object }
+              required: [name]
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Artist' }
+
+  /org/artists/{id}:
+    put:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Update artist
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Organizer]
+      security: [{ bearerAuth: [] }]
+      summary: Delete artist
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Deleted }
+
+  # ========== ORGANIZER EVENTS ==========
+  /org/events:
+    get:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Organizer events list
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string, enum: [draft, published, unpublished, cancelled] }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+    post:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Create event draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string }
+                startDate: { type: string, format: date-time }
+                endDate: { type: string, format: date-time }
+                venueId: { type: string, format: uuid }
+                artistIds: { type: array, items: { type: string, format: uuid } }
+                category: { type: string }
+              required: [title, startDate]
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Event' }
+
+  /org/events/{id}:
+    get:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Get organizer event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Event
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Event' }
+    put:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Update event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Delete event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Deleted }
+
+  /org/events/{id}/publish:
+    post:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Publish event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Published }
+
+  /org/events/{id}/unpublish:
+    post:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Unpublish event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Unpublished }
+
+  /org/events/{id}/duplicate:
+    post:
+      tags: [Organizer Events]
+      security: [{ bearerAuth: [] }]
+      summary: Duplicate event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Duplicated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Event' }
+
+  # ========== ORGANIZER MEDIA ==========
+  /org/events/{id}/media/presign:
+    post:
+      tags: [Organizer Media]
+      security: [{ bearerAuth: [] }]
+      summary: Get presigned upload URL
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filename: { type: string }
+                contentType: { type: string }
+              required: [filename, contentType]
+      responses:
+        '200':
+          description: Presigned URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadUrl: { type: string }
+                  fileUrl: { type: string }
+
+  /org/events/{id}/media:
+    post:
+      tags: [Organizer Media]
+      security: [{ bearerAuth: [] }]
+      summary: Save media references
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Saved }
+
+  /org/events/{id}/attachments:
+    post:
+      tags: [Organizer Media]
+      security: [{ bearerAuth: [] }]
+      summary: Upload attachments metadata
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Saved }
+
+  # ========== ORGANIZER TICKETS ==========
+  /org/events/{id}/ticket-types:
+    get:
+      tags: [Organizer Tickets]
+      security: [{ bearerAuth: [] }]
+      summary: List ticket types
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Ticket types
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TicketType' }
+    post:
+      tags: [Organizer Tickets]
+      security: [{ bearerAuth: [] }]
+      summary: Create ticket type
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                price: { type: number }
+                capacity: { type: integer }
+                description: { type: string }
+              required: [name, price, capacity]
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TicketType' }
+
+  /org/ticket-types/{ticketTypeId}:
+    patch:
+      tags: [Organizer Tickets]
+      security: [{ bearerAuth: [] }]
+      summary: Update ticket type
+      parameters:
+        - in: path
+          name: ticketTypeId
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Organizer Tickets]
+      security: [{ bearerAuth: [] }]
+      summary: Delete ticket type
+      parameters:
+        - in: path
+          name: ticketTypeId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Deleted }
+
+  # ========== ORGANIZER PRICING ==========
+  /org/events/{id}/discount-codes:
+    get:
+      tags: [Organizer Pricing]
+      security: [{ bearerAuth: [] }]
+      summary: List discount codes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Codes
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/DiscountCode' }
+    post:
+      tags: [Organizer Pricing]
+      security: [{ bearerAuth: [] }]
+      summary: Create discount code
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code: { type: string }
+                type: { type: string, enum: [percentage, amount] }
+                value: { type: number }
+                maxUses: { type: integer }
+                expiresAt: { type: string, format: date-time }
+              required: [code, type, value]
+      responses:
+        '200': { description: Created }
+
+  /org/events/{id}/pricing-rules:
+    post:
+      tags: [Organizer Pricing]
+      security: [{ bearerAuth: [] }]
+      summary: Create pricing rule
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: Created }
+
+  # ========== ORGANIZER ORDERS ==========
+  /org/events/{id}/orders:
+    get:
+      tags: [Organizer Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Orders for event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: status
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Order' }
+
+  /org/orders/{orderId}:
+    get:
+      tags: [Organizer Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Order detail
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Order' }
+
+  /org/events/{id}/attendees:
+    get:
+      tags: [Organizer Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Attendee list
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: checkedIn
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: Attendees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /org/events/{id}/checkin:
+    post:
+      tags: [Organizer Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Check-in ticket
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticketId: { type: string, format: uuid }
+                code: { type: string }
+              required: [ticketId]
+      responses:
+        '200':
+          description: Checked in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  ticket: { $ref: '#/components/schemas/Ticket' }
+
+  /org/events/{id}/checkin/bulk:
+    post:
+      tags: [Organizer Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Bulk check-in
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                codes:
+                  type: array
+                  items: { type: string }
+              required: [codes]
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  successful: { type: integer }
+                  failed: { type: integer }
+
+  /org/events/{id}/orders/{orderId}/refund:
+    post:
+      tags: [Organizer Orders]
+      security: [{ bearerAuth: [] }]
+      summary: Refund order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: path
+          name: orderId
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+                amount: { type: number }
+      responses:
+        '200': { description: Refund initiated }
+
+  # ========== ANALYTICS ==========
+  /org/analytics/overview:
+    get:
+      tags: [Analytics]
+      security: [{ bearerAuth: [] }]
+      summary: Organizer overview
+      parameters:
+        - in: query
+          name: range
+          schema: { type: string, enum: [7d, 30d, 90d, 1y], default: 30d }
+      responses:
+        '200':
+          description: Overview
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AnalyticsOverview' }
+
+  /org/analytics/events/{id}/timeseries:
+    get:
+      tags: [Analytics]
+      security: [{ bearerAuth: [] }]
+      summary: Time series metrics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: query
+          name: metric
+          schema: { type: string, enum: [revenue, tickets, views] }
+        - in: query
+          name: range
+          schema: { type: string }
+      responses:
+        '200': { description: Series data }
+
+  /org/analytics/events/{id}/conversion:
+    get:
+      tags: [Analytics]
+      security: [{ bearerAuth: [] }]
+      summary: Conversion funnel
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Funnel data }
+
+  /org/analytics/events/{id}/audience:
+    get:
+      tags: [Analytics]
+      security: [{ bearerAuth: [] }]
+      summary: Audience breakdown
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Audience data }
+
+  /org/analytics/events/{id}/top-sources:
+    get:
+      tags: [Analytics]
+      security: [{ bearerAuth: [] }]
+      summary: Top traffic sources
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Sources data }
+
+  # ========== MODERATION ==========
+  /org/moderation/reports:
+    get:
+      tags: [Moderation]
+      security: [{ bearerAuth: [] }]
+      summary: List reports
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string, enum: [pending, resolved] }
+      responses:
+        '200': { description: Reports }
+
+  /org/moderation/reports/{id}/action:
+    post:
+      tags: [Moderation]
+      security: [{ bearerAuth: [] }]
+      summary: Act on report
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: { type: string, enum: [approve, reject, archive] }
+              required: [action]
+      responses:
+        '200': { description: Updated }
+
+  /org/moderation/chats:
+    get:
+      tags: [Moderation]
+      security: [{ bearerAuth: [] }]
+      summary: Chats for moderation
+      responses:
+        '200':
+          description: Chats
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ChatRoom' }
+
+  /org/moderation/chats/{id}/messages:
+    get:
+      tags: [Moderation]
+      security: [{ bearerAuth: [] }]
+      summary: Messages in moderated chat
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Message' }
+
+  /org/moderation/chats/{id}/action:
+    post:
+      tags: [Moderation]
+      security: [{ bearerAuth: [] }]
+      summary: Moderation action on chat
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: { type: string, enum: [freeze, unfreeze, delete, clear-history] }
+              required: [action]
+      responses:
+        '200': { description: Applied }
+
+  /org/moderation/filters:
+    post:
+      tags: [Moderation]
+      security: [{ bearerAuth: [] }]
+      summary: Update moderation filters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blockedWords:
+                  type: array
+                  items: { type: string }
+                spamProtection: { type: boolean }
+                mediaFilter: { type: boolean }
+      responses:
+        '200': { description: Updated }
+
+  # ========== AI ==========
+  /ai/events/description:
+    post:
+      tags: [AI]
+      security: [{ bearerAuth: [] }]
+      summary: Generate event description
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                tone: { type: string, enum: [professional, casual, exciting] }
+                length: { type: string, enum: [short, medium, long] }
+                seo: { type: boolean }
+              required: [title]
+      responses:
+        '200':
+          description: Generated text
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description: { type: string }
+                  metaDescription: { type: string }
+
+  /ai/events/visual:
+    post:
+      tags: [AI]
+      security: [{ bearerAuth: [] }]
+      summary: Generate visuals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode: { type: string, enum: [poster, instagram] }
+                format: { type: string, enum: [feed_square, feed_portrait, story] }
+                style: { type: string }
+                prompt: { type: string }
+              required: [mode, format, prompt]
+      responses:
+        '200':
+          description: Images
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items: { type: string, format: uri }
+
+  /ai/events/copy-variants:
+    post:
+      tags: [AI]
+      security: [{ bearerAuth: [] }]
+      summary: Generate copy variants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                location: { type: string }
+                date: { type: string }
+              required: [title]
+      responses:
+        '200':
+          description: Variants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  variants:
+                    type: array
+                    items:
+                      type: object
+
+  # ========== NOTIFICATIONS ==========
+  /notifications/broadcast:
+    post:
+      tags: [Notifications]
+      security: [{ bearerAuth: [] }]
+      summary: Broadcast notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target: { type: string, enum: [user, org, event] }
+                audience: { type: object }
+                title: { type: string }
+                message: { type: string }
+              required: [target, title, message]
+      responses:
+        '200': { description: Sent }
+
+  # ========== REALTIME ==========
+  /realtime:
+    get:
+      tags: [Realtime]
+      summary: WebSocket/SSE upgrade endpoint
+      responses:
+        '101': { description: Upgrade to WebSocket }
+
+  # ========== SYSTEM ==========
+  /config:
+    get:
+      tags: [System]
+      summary: Public configuration
+      responses:
+        '200': { description: Config }
+
+  /health:
+    get:
+      tags: [System]
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+
+  /ready:
+    get:
+      tags: [System]
+      summary: Readiness probe
+      responses:
+        '200': { description: Ready }
+
+  /version:
+    get:
+      tags: [System]
+      summary: Version info
+      responses:
+        '200':
+          description: Version
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version: { type: string }
+                  buildDate: { type: string }

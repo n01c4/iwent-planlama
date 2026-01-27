@@ -1,0 +1,29 @@
+### Etkinlikler (Ana Sayfa)
+
+#### Önerilen Ana Sayfa Tasarımı
+
+**1. Etkinlik Arama ve Filtreleme**
+- **Arama Çubuğu**: Kullanıcılar etkinlikleri hızlıca bulmak için ana sayfadaki arama çubuğunu kullanabilir. Bu çubuk, doğal dil anlayışı ile etkinlik bulma özelliğine sahip olmalı.
+- **Filtreler**: "Yakınımdaki Etkinlikler", "Organizatör Puanı", "Konum", "Etkinlik Türü" ve "Tarih" gibi filtre seçenekleri sunulmalı.
+
+**2. Etkinlik Listesi ve Öne Çıkan Etkinlikler**
+- **Öne Çıkan Etkinlikler**: Ana sayfanın üst kısmında popüler veya organizatörler tarafından öne çıkarılan etkinlikler yer almalı.
+- **Etkinlik Kartları**: Etkinlikler kart formatında listelenmeli ve kartlarda etkinlik adı, tarih, konum ve katılımcı sayısı gibi bilgiler olmalı.
+
+**3. Etkinlik Detayları**
+- **Etkinlik Bilgileri**: Kullanıcılar, etkinlik kartına tıklayarak etkinlik detaylarına erişmeli; açıklama, konum haritası ve katılım ücretleri gibi bilgiler yer almalı.
+- **Organizatör Bilgileri ve Geri Bildirim**: Organizatorün adı tıklanabilir olmalı ve geçmiş etkinlikler, puanlar ve yorumlar görüntülenebilmelidir.
+
+**4. Kullanıcı Etkileşimleri**
+- **Etkinliğe Katıl ve Paylaş**: Kullanıcılar, etkinliğe katılabilir ve etkinliği sosyal medyada paylaşabilir.
+- **Geri Bildirim ve Yorumlar**: Etkinlik detaylarında, katılımcı yorumları ve geri bildirimler yer almalı.
+
+**5. Kişiselleştirilmiş Ana Sayfa**
+- **Kişiselleştirilmiş Öneriler**: Kullanıcının ilgi alanlarına ve geçmiş etkinlik katılımlarına göre öneriler sunulmalı.
+- **Yakın Zamandaki Etkinlikler**: Yakın çevredeki ve yakında gerçekleşecek etkinlikler vurgulanmalı.
+
+**6. Ekstralar**
+- **Harita Görünümü**: Kullanıcılar, etkinlikleri harita üzerinde görüntüleyebilir.
+- **Takvim Entegrasyonu**: Etkinlik tarihleri kullanıcı takvimine entegre edilebilmelidir.
+
+Bu tasarım, kullanıcıların etkinlikleri kolayca bulmalarını, katılmalarını ve bilgiye erişmelerini amaçlar. Kişiselleştirilmiş öneriler ve filtreleme özellikleri, ilgi duyulan etkinliklerin bulunmasını hızlandırır.
