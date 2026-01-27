@@ -6,3 +6,68 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Minimal User model for Faz 1 - will be expanded
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  name          String?
+  city          String?
+  role          UserRole  @default(user)
+  avatarUrl     String?   @map("avatar_url")
+
+  // Profile
+  bio           String?
+  phone         String?
+  dateOfBirth   DateTime? @map("date_of_birth") @db.Date
+
+  // Email verification
+  emailVerified           Boolean   @default(false) @map("email_verified")
+  emailVerificationCode   String?   @map("email_verification_code")
+  emailVerificationExpires DateTime? @map("email_verification_expires_at")
+
+  // Password reset
+  passwordResetToken      String?   @map("password_reset_token")
+  passwordResetExpires    DateTime? @map("password_reset_expires_at")
+
+  // Security
+  lastLoginAt   DateTime? @map("last_login_at")
+  lastLoginIp   String?   @map("last_login_ip")
+
+  // Timestamps
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  // Relations
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  tokenHash   String    @unique @map("token_hash")
+  deviceInfo  Json?     @map("device_info")
+  ipAddress   String?   @map("ip_address")
+  expiresAt   DateTime  @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
+}
+
+enum UserRole {
+  public
+  user
+  organizer
+  admin
+
+  @@map("user_role")
+}
