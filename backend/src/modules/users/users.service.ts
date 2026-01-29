@@ -1,57 +1,186 @@
 import { prisma } from '../../shared/database/index.js';
+import { NotFoundError } from '../../shared/utils/errors.js';
 import type { UpdateProfileInput } from './users.schema.js';
+import { ordersService } from '../orders/orders.service.js';
+import { ticketsService } from '../tickets/tickets.service.js';
 
-/**
- * Users Service
- * Handles user profile business logic
- * Will be implemented in the next step
- */
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string | null;
+  city: string | null;
+  role: 'public' | 'user' | 'organizer' | 'admin';
+  avatarUrl: string | null;
+  bio: string | null;
+  phone: string | null;
+  dateOfBirth: Date | null;
+  emailVerified: boolean;
+  createdAt: Date;
+}
+
+export interface PublicUserProfile {
+  id: string;
+  name: string | null;
+  avatarUrl: string | null;
+  city?: string | null;
+  bio?: string | null;
+}
+
 export class UsersService {
-  async getProfile(_userId: string) {
-    // TODO: Implement
-    // 1. Find user by ID
-    // 2. Return user profile (exclude sensitive fields)
-    throw new Error('Not implemented');
+  /**
+   * Get current user's profile
+   */
+  async getProfile(userId: string): Promise<UserProfile> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        city: true,
+        role: true,
+        avatarUrl: true,
+        bio: true,
+        phone: true,
+        dateOfBirth: true,
+        emailVerified: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    return user;
   }
 
-  async updateProfile(_userId: string, _input: UpdateProfileInput) {
-    // TODO: Implement
-    // 1. Update user
-    // 2. Return updated profile
-    throw new Error('Not implemented');
+  /**
+   * Update current user's profile
+   */
+  async updateProfile(userId: string, input: UpdateProfileInput): Promise<UserProfile> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const updateData: Record<string, unknown> = {};
+
+    if (input.name !== undefined) updateData.name = input.name;
+    if (input.city !== undefined) updateData.city = input.city;
+    if (input.bio !== undefined) updateData.bio = input.bio;
+    if (input.phone !== undefined) updateData.phone = input.phone;
+    if (input.avatarUrl !== undefined) updateData.avatarUrl = input.avatarUrl;
+    if (input.dateOfBirth !== undefined) {
+      updateData.dateOfBirth = new Date(input.dateOfBirth);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        city: true,
+        role: true,
+        avatarUrl: true,
+        bio: true,
+        phone: true,
+        dateOfBirth: true,
+        emailVerified: true,
+        createdAt: true,
+      },
+    });
+
+    return updatedUser;
   }
 
-  async getPublicProfile(_userId: string, _viewerId?: string) {
-    // TODO: Implement
-    // 1. Find user by ID
-    // 2. Check visibility rules (shared event or friends)
-    // 3. Return limited or full profile based on relationship
-    throw new Error('Not implemented');
+  /**
+   * Get public profile of another user
+   * Returns limited info based on relationship (friend or shared event)
+   */
+  async getPublicProfile(targetUserId: string, viewerId?: string): Promise<PublicUserProfile> {
+    const user = await prisma.user.findUnique({
+      where: { id: targetUserId, deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        avatarUrl: true,
+        city: true,
+        bio: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    // If no viewer (public access), return minimal info
+    if (!viewerId) {
+      return {
+        id: user.id,
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+      };
+    }
+
+    // If viewing own profile, return full info
+    if (viewerId === targetUserId) {
+      return user;
+    }
+
+    // TODO: Check if they are friends or attended same event
+    // For now, return full public profile
+    // In production, implement the visibility rules from PRD:
+    // - Friends can see full profile
+    // - Users who attended same event can see full profile
+    // - Otherwise, only name and avatarUrl
+
+    return user;
   }
 
-  async getUserTickets(_userId: string) {
-    // TODO: Implement
-    throw new Error('Not implemented');
+  /**
+   * Get user's tickets
+   */
+  async getUserTickets(userId: string) {
+    const result = await ticketsService.getUserTickets(userId, { page: 1, limit: 20 });
+    return result.items;
   }
 
-  async getUserOrders(_userId: string) {
-    // TODO: Implement
-    throw new Error('Not implemented');
+  /**
+   * Get user's orders
+   */
+  async getUserOrders(userId: string) {
+    const result = await ordersService.getUserOrders(userId, { page: 1, limit: 20 });
+    return result.items;
   }
 
-  async getUserNotifications(_userId: string, _status?: 'unread' | 'all') {
-    // TODO: Implement
-    throw new Error('Not implemented');
+  /**
+   * Get user's notifications (placeholder)
+   */
+  async getUserNotifications(userId: string, status?: 'unread' | 'all') {
+    // Will be implemented in notifications module
+    return [];
   }
 
-  async markNotificationsRead(_userId: string, _ids?: string[], _all?: boolean) {
-    // TODO: Implement
-    throw new Error('Not implemented');
+  /**
+   * Mark notifications as read (placeholder)
+   */
+  async markNotificationsRead(userId: string, ids?: string[], all?: boolean) {
+    // Will be implemented in notifications module
+    return { updated: 0 };
   }
 
-  async getUserCalendar(_userId: string) {
-    // TODO: Implement
-    throw new Error('Not implemented');
+  /**
+   * Get user's event calendar (placeholder)
+   */
+  async getUserCalendar(userId: string) {
+    // Will be implemented in events module
+    return [];
   }
 }
 

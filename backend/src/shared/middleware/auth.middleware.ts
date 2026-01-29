@@ -1,12 +1,8 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { UnauthorizedError, ForbiddenError } from '../utils/errors.js';
+import { verifyAccessToken, type AccessTokenPayload } from '../utils/jwt.js';
 
-// Placeholder types - will be expanded when auth is implemented
-export interface JwtPayload {
-  sub: string;
-  email: string;
-  role: 'public' | 'user' | 'organizer' | 'admin';
-  organizerId?: string;
+export interface JwtPayload extends AccessTokenPayload {
   iat: number;
   exp: number;
 }
@@ -19,27 +15,34 @@ declare module 'fastify' {
 
 /**
  * Middleware: Require authentication
- * Will be implemented in auth module
+ * Verifies JWT access token from Authorization header
  */
 export async function requireAuth(
   request: FastifyRequest,
   _reply: FastifyReply
 ): Promise<void> {
-  // TODO: Implement JWT verification
-  // For now, just check if Authorization header exists
   const authHeader = request.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
     throw new UnauthorizedError('Missing or invalid authorization header');
   }
 
-  // TODO: Verify JWT and set request.user
-  // const token = authHeader.slice(7);
-  // request.user = verifyToken(token);
+  const token = authHeader.slice(7);
+
+  try {
+    const payload = verifyAccessToken(token);
+    request.user = payload;
+  } catch (error) {
+    if (error instanceof Error && error.name === 'TokenExpiredError') {
+      throw new UnauthorizedError('Token expired', 'TOKEN_EXPIRED');
+    }
+    throw new UnauthorizedError('Invalid token', 'INVALID_TOKEN');
+  }
 }
 
 /**
  * Middleware: Require specific role(s)
+ * Must be used after requireAuth
  */
 export function requireRole(...roles: JwtPayload['role'][]) {
   return async (request: FastifyRequest, _reply: FastifyReply): Promise<void> => {
@@ -47,7 +50,18 @@ export function requireRole(...roles: JwtPayload['role'][]) {
       throw new UnauthorizedError('Authentication required');
     }
 
-    if (!roles.includes(request.user.role)) {
+    // Role hierarchy: admin > organizer > user > public
+    const roleHierarchy: Record<string, number> = {
+      public: 0,
+      user: 1,
+      organizer: 2,
+      admin: 3,
+    };
+
+    const userRoleLevel = roleHierarchy[request.user.role] ?? 0;
+    const hasPermission = roles.some(role => userRoleLevel >= roleHierarchy[role]);
+
+    if (!hasPermission) {
       throw new ForbiddenError('Insufficient permissions');
     }
   };
@@ -64,14 +78,14 @@ export async function optionalAuth(
   const authHeader = request.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
-    return; // No auth, continue without user
+    return;
   }
 
-  // TODO: Verify JWT and set request.user if valid
-  // try {
-  //   const token = authHeader.slice(7);
-  //   request.user = verifyToken(token);
-  // } catch {
-  //   // Invalid token, continue without user
-  // }
+  try {
+    const token = authHeader.slice(7);
+    const payload = verifyAccessToken(token);
+    request.user = payload;
+  } catch {
+    // Invalid token, continue without user
+  }
 }

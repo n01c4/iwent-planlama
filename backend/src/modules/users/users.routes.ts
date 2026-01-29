@@ -1,38 +1,193 @@
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { usersService } from './users.service.js';
+import {
+  updateProfileSchema,
+  userParamsSchema,
+  type UpdateProfileInput,
+} from './users.schema.js';
+import { followedArtistsQuerySchema, type FollowedArtistsQueryInput } from '../artists/artists.schema.js';
+import { artistsService } from '../artists/artists.service.js';
+import { requireAuth, optionalAuth } from '../../shared/middleware/index.js';
+import { ValidationError } from '../../shared/utils/errors.js';
+
+/**
+ * Helper to validate request body/params with Zod
+ */
+function validate<T>(schema: { safeParse: (data: unknown) => { success: boolean; data?: T; error?: { flatten: () => { fieldErrors: unknown } } } }, data: unknown): T {
+  const result = schema.safeParse(data);
+  if (!result.success) {
+    throw new ValidationError('Validation failed', result.error?.flatten().fieldErrors);
+  }
+  return result.data as T;
+}
 
 /**
  * Users Routes
  * Prefix: /api/v1/users
- *
- * Endpoints (to be implemented):
- * - GET /me
- * - PATCH /me
- * - GET /me/tickets
- * - GET /me/orders
- * - GET /me/notifications
- * - POST /me/notifications (mark read)
- * - GET /me/calendar
- * - GET /:userId (public profile)
  */
 export async function usersRoutes(app: FastifyInstance): Promise<void> {
-  // Placeholder route for testing
+  /**
+   * GET /users/me
+   * Get current user's profile
+   */
+  app.get('/me', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const profile = await usersService.getProfile(request.user!.sub);
+
+    return reply.send({
+      success: true,
+      data: profile,
+    });
+  });
+
+  /**
+   * PATCH /users/me
+   * Update current user's profile
+   */
+  app.patch('/me', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const input = validate<UpdateProfileInput>(updateProfileSchema, request.body);
+    const profile = await usersService.updateProfile(request.user!.sub, input);
+
+    return reply.send({
+      success: true,
+      data: profile,
+    });
+  });
+
+  /**
+   * GET /users/me/tickets
+   * Get current user's tickets (placeholder)
+   */
+  app.get('/me/tickets', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const tickets = await usersService.getUserTickets(request.user!.sub);
+
+    return reply.send({
+      success: true,
+      data: tickets,
+    });
+  });
+
+  /**
+   * GET /users/me/orders
+   * Get current user's orders (placeholder)
+   */
+  app.get('/me/orders', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const orders = await usersService.getUserOrders(request.user!.sub);
+
+    return reply.send({
+      success: true,
+      data: orders,
+    });
+  });
+
+  /**
+   * GET /users/me/notifications
+   * Get current user's notifications (placeholder)
+   */
+  app.get('/me/notifications', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const query = request.query as { status?: 'unread' | 'all' };
+    const notifications = await usersService.getUserNotifications(request.user!.sub, query.status);
+
+    return reply.send({
+      success: true,
+      data: notifications,
+    });
+  });
+
+  /**
+   * POST /users/me/notifications/read
+   * Mark notifications as read (placeholder)
+   */
+  app.post('/me/notifications/read', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as { ids?: string[]; all?: boolean };
+    const result = await usersService.markNotificationsRead(request.user!.sub, body.ids, body.all);
+
+    return reply.send({
+      success: true,
+      data: result,
+    });
+  });
+
+  /**
+   * GET /users/me/calendar
+   * Get current user's event calendar (placeholder)
+   */
+  app.get('/me/calendar', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const calendar = await usersService.getUserCalendar(request.user!.sub);
+
+    return reply.send({
+      success: true,
+      data: calendar,
+    });
+  });
+
+  /**
+   * GET /users/me/following/artists
+   * Get current user's followed artists (Faz 5)
+   */
+  app.get('/me/following/artists', {
+    preHandler: [requireAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const userId = request.user!.sub;
+    const query = validate<FollowedArtistsQueryInput>(followedArtistsQuerySchema, request.query);
+
+    const result = await artistsService.getFollowedArtists(userId, query);
+
+    return reply.send({
+      success: true,
+      data: result.items,
+      meta: result.meta,
+    });
+  });
+
+  /**
+   * GET /users/:userId
+   * Get public profile of another user
+   */
+  app.get('/:userId', {
+    preHandler: [optionalAuth],
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const params = request.params as { userId: string };
+    const { userId } = validate<{ userId: string }>(userParamsSchema, params);
+    const viewerId = request.user?.sub;
+
+    const profile = await usersService.getPublicProfile(userId, viewerId);
+
+    return reply.send({
+      success: true,
+      data: profile,
+    });
+  });
+
+  /**
+   * GET /users/status
+   * Check users module status (for debugging)
+   */
   app.get('/status', async () => ({
     module: 'users',
-    status: 'placeholder',
+    status: 'active',
     endpoints: [
       'GET /me',
       'PATCH /me',
       'GET /me/tickets',
       'GET /me/orders',
       'GET /me/notifications',
-      'POST /me/notifications',
+      'POST /me/notifications/read',
       'GET /me/calendar',
       'GET /:userId',
     ],
   }));
-
-  // TODO: Implement user endpoints
-  // app.get('/me', { preHandler: [requireAuth] }, async (request, reply) => { ... });
-  // app.patch('/me', { preHandler: [requireAuth] }, async (request, reply) => { ... });
-  // etc.
 }

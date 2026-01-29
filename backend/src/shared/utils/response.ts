@@ -11,6 +11,7 @@ export interface ApiResponse<T = unknown> {
     limit?: number;
     total?: number;
     hasMore?: boolean;
+    nextCursor?: string | null; // For cursor-based pagination
   };
 }
 

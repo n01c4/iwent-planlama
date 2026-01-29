@@ -1,7 +1,35 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(test:*)",
+      "Bash(nc:*)",
+      "Bash({\"email\":\"organizer-faz3@iwent.com\",\"password\":\"Test123456\",\"name\":\"Faz3 Organizer\"})",
+      "Bash(BODY)",
+      "Bash({\"website\":\"https://faz3events.com\"})",
+      "Bash(__NEW_LINE_4780e612b9134b52__ echo \"\")",
+      "Bash(__NEW_LINE_088e5b3c3532f494__ echo \"\")",
+      "Bash(npx tsx:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NjJmMjVjYy0wNjNiLTRjMTctOGZiMS01MTE5YWQzMzU4MDkiLCJlbWFpbCI6Im9yZ2FuaXplckB0ZXN0LmNvbSIsInJvbGUiOiJvcmdhbml6ZXIiLCJpYXQiOjE3Njk2MDc5OTYsImV4cCI6MTc2OTYwODg5Nn0.XKXnwAyR1i03v6-stgjdKngqOXX1GFhEsiiaIETDIIw\")",
+      "Bash(EVENT_ID=\"fba8b118-654d-4058-b4f5-550a181ec37d\")",
+      "Bash(__NEW_LINE_b99baa4b3829e6f2__ echo \"=== 1. GET /org/events - Etkinlik listesi \\(artık 1 etkinlik var\\) ===\")",
+      "Bash(npm run build:*)",
+      "Bash({\"email\":\"buyer@test.com\",\"password\":\"Test123!\",\"name\":\"Test Buyer\"})",
+      "Bash(EOF)",
+      "Bash(BUYER_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NjA3NWQ5ZC0wNTVmLTRhYjktYTY5Yi01ZjczYjY0YjQ0NjEiLCJlbWFpbCI6ImJ1eWVyQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3Njk2MjkzMDIsImV4cCI6MTc2OTYzMDIwMn0.MV_899esthHyFzjsQnCmQ2P7ZIPD7cIGLKRRT65_p58\")",
+      "Bash(ORDER_ID=\"0beae87f-cd19-47cd-836e-6860aed83e05\")",
+      "Bash(__NEW_LINE_2945066311273ca4__ echo \"=== GET /orders/:id \\(after payment\\) ===\")",
+      "Bash(__NEW_LINE_b0865fab43a9ed74__ echo \"\")",
+      "Bash(__NEW_LINE_9a853d1ec6747319__ echo \"\")",
+      "Bash(__NEW_LINE_063b83cc491331f9__ echo \"=== GET /orders/:id \\(after payment\\) ===\")",
+      "Bash(__NEW_LINE_063b83cc491331f9__ echo \"\")",
+      "Bash(docker:*)",
+      "Bash(psql:*)",
+      "Bash(pg_isready:*)",
+      "Bash(npm run test:e2e:*)",
+      "Bash(NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' jest:*)",
+      "Bash(NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' npx jest:*)",
+      "Bash(lsof:*)"
     ]
   }
 }

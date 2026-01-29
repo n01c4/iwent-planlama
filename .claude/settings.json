@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell -Command \"\\(Get-Content ''c:\\\\Users\\\\merti\\\\Downloads\\\\iwent-planlama\\\\CLAUDE.md''\\).Count\")"
+      "Bash(powershell -Command \"\\(Get-Content ''c:\\\\Users\\\\merti\\\\Downloads\\\\iwent-planlama\\\\CLAUDE.md''\\).Count\")",
+      "Bash(pkill:*)"
     ]
   }
 }

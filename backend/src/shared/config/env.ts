@@ -9,9 +9,9 @@ const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().url(),
 
-  // JWT (will be required when auth is implemented)
-  JWT_SECRET: z.string().min(32).optional(),
-  JWT_REFRESH_SECRET: z.string().min(32).optional(),
+  // JWT (required for auth module)
+  JWT_SECRET: z.string().min(32),
+  JWT_REFRESH_SECRET: z.string().min(32),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 

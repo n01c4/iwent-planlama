@@ -425,8 +425,8 @@ src/
 - `GET /calendar/feeds/ics`
 
 **Deliverables:**
-- [ ] AI description generation (Gemini)
-- [ ] AI visual generation (DALL-E/Stable Diffusion)
+- [ ] AI SEO-friendly description generation (Gemini)
+- [ ] AI visual generation (Nano banana pro)
 - [ ] Marketing copy variants
 - [ ] ICS calendar feed
 - [ ] Calendar view for users

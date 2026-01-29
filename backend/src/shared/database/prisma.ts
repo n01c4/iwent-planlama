@@ -1,38 +1,21 @@
+import { PrismaClient } from '@prisma/client';
 import { env } from '../config/index.js';
 
-// Lazy-loaded Prisma client type
-type PrismaClientType = import('@prisma/client').PrismaClient;
+// Global singleton for Prisma Client
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-let prismaInstance: PrismaClientType | null = null;
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
 
-/**
- * Get Prisma client instance (lazy loaded)
- * This allows the app to start even without Prisma being generated
- */
-export function getPrisma(): PrismaClientType {
-  if (!prismaInstance) {
-    // Dynamic import to avoid errors when Prisma is not generated
-    const { PrismaClient } = require('@prisma/client');
-    prismaInstance = new PrismaClient({
-      log: env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-    });
-  }
-  return prismaInstance as PrismaClientType;
+if (env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
 }
 
-/**
- * Prisma client getter (for backwards compatibility)
- * Use getPrisma() for lazy loading
- */
-export const prisma = new Proxy({} as PrismaClientType, {
-  get(_target, prop) {
-    return getPrisma()[prop as keyof PrismaClientType];
-  },
-});
-
 export async function disconnectPrisma(): Promise<void> {
-  if (prismaInstance) {
-    await prismaInstance.$disconnect();
-    prismaInstance = null;
-  }
+  await prisma.$disconnect();
 }
