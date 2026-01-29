@@ -21,7 +21,10 @@ Phase 4: Execution
 1. Execute subtasks in order.
 2. Report progress after each major step.
 3. Stop and ask if blocked.
-4. Write and run tests before calling a change done.
+4. Write and run tests before calling a change done:
+   - Unit tests for all new business logic
+   - Integration tests for all API endpoints
+   - **E2E tests for user-facing features** (mandatory for new features)
 
 ## TodoWrite Usage
 - Use TodoWrite for tasks with 2 or more steps, complex features, and non-trivial bug fixes.
@@ -36,7 +39,8 @@ Phase 4: Execution
 7. [ ] Validation schema
 8. [ ] Unit tests
 9. [ ] Integration tests
-10. [ ] Documentation update
+10. [ ] E2E tests (for new features)
+11. [ ] Documentation update
 ```
 
 ## Progress Reporting

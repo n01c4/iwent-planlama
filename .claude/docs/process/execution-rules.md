@@ -63,3 +63,10 @@ Approve?
 
 ## When Uncertain
 - Do not assume. Present options and trade-offs, then continue after confirmation.
+
+## E2E Testing Requirement
+**MANDATORY for all new features and phase completions:**
+- Every user-facing feature MUST include at least one E2E test covering the happy path.
+- E2E tests should be written before marking a feature as complete.
+- Use the `/test-flow` command to generate test structure for common flows.
+- E2E tests are not optional - they are part of the Definition of Done.

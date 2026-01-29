@@ -15,7 +15,8 @@ Use this when validating changes or preparing for merge.
    - Clean up in `afterEach` to keep tests isolated.
 5) Run commands:
    - `pnpm test` (full suite) or targeted `pnpm test -- --filter=<module>`.
-   - `pnpm test:integration` and `pnpm test:e2e` when endpoints are affected.
+   - `pnpm test:integration` for all API endpoints.
+   - **`pnpm test:e2e` (MANDATORY for new features)** - Must pass before feature is considered complete.
    - `pnpm test:coverage` for coverage gates.
 6) Analyze failures: fix root cause, not just symptoms. Re-run the relevant subset.
 7) Report results: list commands run, coverage notes, and any untested risk areas.

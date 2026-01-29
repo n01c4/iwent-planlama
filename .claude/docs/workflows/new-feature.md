@@ -17,9 +17,11 @@ Use this for multi-endpoint or multi-component work (e.g., user stories feature)
    - Ops: cron/edge functions if applicable.
 3) Approval: Level 3 if multiple endpoints, migrations, or security-sensitive changes.
 4) Implement in increments; request intermediate approval every 3–4 completed steps.
-5) Testing:
+5) Testing (MANDATORY):
    - Unit coverage >80% for new logic.
    - Integration tests for all endpoints.
+   - **E2E tests for critical user flows** - At minimum one happy path scenario covering the feature end-to-end.
    - Edge cases (expiry, permissions, visibility, limits).
+   - Use `/test-flow` command to generate E2E test structure if needed.
 6) Update API docs and any feature docs; note frontend impacts.
-7) Provide final status: what shipped, tests run, and follow-ups.
+7) Provide final status: what shipped, tests run (including E2E), and follow-ups.
