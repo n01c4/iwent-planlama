@@ -1,6 +1,11 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { searchService } from './search.service.js';
-import { searchQuerySchema, type SearchQueryInput } from './search.schema.js';
+import {
+  searchQuerySchema,
+  naturalSearchSchema,
+  type SearchQueryInput,
+  type NaturalSearchInput,
+} from './search.schema.js';
 import { ValidationError } from '../../shared/utils/errors.js';
 
 /**
@@ -24,7 +29,7 @@ function validate<T>(
 export async function searchRoutes(app: FastifyInstance): Promise<void> {
   /**
    * GET /search
-   * Search across events, venues, and artists
+   * Search across events, venues, and artists (keyword-based)
    */
   app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
     const query = validate<SearchQueryInput>(searchQuerySchema, request.query);
@@ -37,6 +42,62 @@ export async function searchRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * POST /search/natural
+   * AI-powered natural language search
+   *
+   * Example queries (Turkish):
+   * - "Cuma akşamı İstanbul'da canlı müzik konserleri"
+   * - "Bu hafta sonu İzmir'de açık hava etkinlikleri"
+   * - "Gelecek ay Ankara'da stand-up gösterileri"
+   * - "200 TL altında tiyatro bileti"
+   *
+   * Rate limit: 30 requests/minute (authenticated), 10 requests/minute (public)
+   */
+  app.post(
+    '/natural',
+    {
+      config: {
+        rateLimit: {
+          max: 30,
+          timeWindow: '1 minute',
+          keyGenerator: (request: FastifyRequest) => {
+            return request.user?.sub || request.ip;
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const input = validate<NaturalSearchInput>(naturalSearchSchema, request.body);
+
+      // Log the search query for monitoring
+      request.log.info({
+        event: 'nlp_search_request',
+        query: input.query,
+        userId: request.user?.sub || 'anonymous',
+        userPreferences: input.userPreferences,
+      });
+
+      const results = await searchService.naturalSearch(input);
+
+      // Log the response metadata
+      request.log.info({
+        event: 'nlp_search_response',
+        query: input.query,
+        userId: request.user?.sub || 'anonymous',
+        resultsCount: results.total,
+        fallbackUsed: results.metadata.fallbackUsed,
+        responseTimeMs: results.metadata.responseTimeMs,
+        parsedIntent: results.metadata.parsedIntent,
+      });
+
+      return reply.send({
+        success: true,
+        data: results,
+      });
+    }
+  );
+
+  /**
    * GET /search/status
    * Module status endpoint
    */
@@ -45,6 +106,8 @@ export async function searchRoutes(app: FastifyInstance): Promise<void> {
     status: 'active',
     endpoints: [
       'GET /?q=&type=&limit=&city=',
+      'POST /natural - AI-powered NLP search',
     ],
+    nlpSearchEnabled: true,
   }));
 }

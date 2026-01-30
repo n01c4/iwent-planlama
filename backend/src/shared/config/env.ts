@@ -30,6 +30,12 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   SENDGRID_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().default('noreply@iwent.com.tr'),
+
+  // AI Features (Phase 8)
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash-exp'),
+  NLP_SEARCH_TIMEOUT: z.string().default('1000').transform(Number),
+  NLP_SEARCH_CACHE_TTL: z.string().default('3600').transform(Number),
 });
 
 export type Env = z.infer<typeof envSchema>;

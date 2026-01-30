@@ -44,3 +44,20 @@ export const standardRateLimitConfig = {
   max: 300,
   timeWindow: '1 minute',
 };
+
+/**
+ * NLP Search rate limit - Phase 8
+ * Lower limit due to AI API costs and resources
+ * Authenticated: 30 requests per minute
+ * Public: 10 requests per minute
+ */
+export const nlpSearchRateLimitConfig = {
+  authenticated: {
+    max: 30,
+    timeWindow: '1 minute',
+  },
+  public: {
+    max: 10,
+    timeWindow: '1 minute',
+  },
+};

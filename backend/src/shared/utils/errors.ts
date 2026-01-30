@@ -75,3 +75,35 @@ export class InternalServerError extends AppError {
     super(message, 500, code, false);
   }
 }
+
+/**
+ * AI Service Error - Phase 8
+ * Used when AI API calls fail
+ */
+export class AIServiceError extends AppError {
+  public readonly provider: string;
+  public readonly originalError?: Error;
+
+  constructor(
+    message = 'AI service temporarily unavailable',
+    provider = 'gemini',
+    originalError?: Error
+  ) {
+    super(message, 503, 'AI_SERVICE_ERROR');
+    this.provider = provider;
+    this.originalError = originalError;
+  }
+}
+
+/**
+ * AI Timeout Error - Phase 8
+ * Used when AI API call times out
+ */
+export class AITimeoutError extends AppError {
+  public readonly timeoutMs: number;
+
+  constructor(message = 'AI service timeout', timeoutMs = 1000) {
+    super(message, 504, 'AI_TIMEOUT');
+    this.timeoutMs = timeoutMs;
+  }
+}
