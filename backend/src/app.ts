@@ -28,6 +28,10 @@ import { startOrderExpirationJob } from './shared/jobs/index.js';
 import { socialRoutes } from './modules/social/index.js';
 import { chatRoutes } from './modules/chat/index.js';
 
+// Module imports - Faz 7 (Notifications & Moderation)
+import { notificationsRoutes, broadcastRoutes } from './modules/notifications/index.js';
+import { moderationRoutes, userReportRoutes } from './modules/moderation/index.js';
+
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
     logger: {
@@ -92,6 +96,11 @@ export async function buildApp(): Promise<FastifyInstance> {
     // Faz 5: Social Features
     await api.register(socialRoutes, { prefix: '/users' }); // Friends, likes under /users/me/*
     await api.register(chatRoutes, { prefix: '/users/me/chats' }); // Chat routes
+
+    // Faz 7: Notifications & Moderation
+    await api.register(notificationsRoutes, { prefix: '/users' }); // User notifications under /users/me/notifications
+    await api.register(broadcastRoutes, { prefix: '/notifications' }); // Broadcast under /notifications/broadcast
+    await api.register(userReportRoutes, { prefix: '/users' }); // User reports under /users/me/reports
   }, { prefix: '/api/v1' });
 
   // Start background jobs

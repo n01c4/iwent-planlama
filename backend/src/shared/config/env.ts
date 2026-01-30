@@ -19,6 +19,17 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url().optional(),
   SUPABASE_ANON_KEY: z.string().optional(),
   SUPABASE_SERVICE_KEY: z.string().optional(),
+
+  // Firebase Cloud Messaging (optional)
+  FIREBASE_PROJECT_ID: z.string().optional(),
+  FIREBASE_PRIVATE_KEY: z.string().optional(),
+  FIREBASE_CLIENT_EMAIL: z.string().email().optional(),
+
+  // Email (Resend/SendGrid) - optional
+  EMAIL_PROVIDER: z.enum(['resend', 'sendgrid', 'mock']).default('mock'),
+  RESEND_API_KEY: z.string().optional(),
+  SENDGRID_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default('noreply@iwent.com.tr'),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -6,6 +6,7 @@ import {
 } from '../../shared/utils/errors.js';
 import { socialService } from '../social/social.service.js';
 import { realtimeService, type BroadcastMessagePayload } from '../../shared/realtime/index.js';
+import { filtersService } from '../moderation/filters.service.js';
 import type { ChatsQuery, MessagesQuery, SendMessageInput } from './chat.schema.js';
 
 // =============================================================================
@@ -389,6 +390,27 @@ class ChatService {
     const canSend = await this.canSendMessage(userId, chatId);
     if (!canSend.allowed) {
       throw new ForbiddenError(canSend.reason || 'Cannot send message');
+    }
+
+    // Get chat room for event ID (for filter check)
+    const chatRoom = await prisma.chatRoom.findUnique({
+      where: { id: chatId },
+      select: { eventId: true, type: true },
+    });
+
+    // Check message filters (for event chats only)
+    if (chatRoom?.type === 'event' && chatRoom.eventId) {
+      const filterResult = await filtersService.checkMessage(
+        userId,
+        chatId,
+        data.content,
+        !!data.mediaUrl,
+        chatRoom.eventId
+      );
+
+      if (!filterResult.allowed) {
+        throw new BadRequestError(filterResult.reason || 'Message blocked by filter');
+      }
     }
 
     // Validate reply

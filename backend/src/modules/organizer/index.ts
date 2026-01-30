@@ -8,6 +8,7 @@ import { orgOrdersRoutes } from './orders/index.js';
 import { pricingRoutes } from './pricing/index.js';
 import { analyticsRoutes } from './analytics/index.js';
 import { checkinRoutes } from './checkin/index.js';
+import { moderationRoutes } from '../moderation/index.js';
 
 /**
  * Organizer Module - Main Entry Point
@@ -41,6 +42,9 @@ export async function organizerRoutes(app: FastifyInstance): Promise<void> {
 
   // Faz 6: Check-in routes (/org/events/:id/attendees, /org/events/:id/checkin)
   await app.register(checkinRoutes);
+
+  // Faz 7: Moderation routes (/org/moderation/*)
+  await app.register(moderationRoutes, { prefix: '/moderation' });
 }
 
 // Re-export services for external use

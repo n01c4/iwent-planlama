@@ -45,6 +45,10 @@ model User {
   tickets                  Ticket[]          @relation("TicketOwner")
   likes                    UserLike[]
   venueReviews             VenueReview[]
+  notifications            Notification[]
+  reportsFiled             Report[]       @relation("ReportedBy")
+  reportsResolved          Report[]       @relation("ResolvedBy")
+  spamTrackers             SpamTracker[]
 
   @@map("users")
 }
@@ -109,9 +113,11 @@ model Organizer {
   updatedAt        DateTime     @updatedAt @map("updated_at")
   managedArtists   Artist[]
   events           Event[]
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  teamMembers      TeamMember[]
-  managedVenues    Venue[]
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamMembers       TeamMember[]
+  managedVenues     Venue[]
+  reports           Report[]
+  moderationFilter  ModerationFilter?
 
   @@index([userId])
   @@index([city])
@@ -537,6 +543,7 @@ model ChatRoom {
   event            Event?            @relation(fields: [eventId], references: [id], onDelete: Cascade)
   frozenBy         User?             @relation("ChatRoomFrozenBy", fields: [frozenById], references: [id])
   messages         Message[]
+  spamTrackers     SpamTracker[]
 
   @@index([eventId])
   @@index([type])
@@ -715,4 +722,135 @@ enum ChatType {
   event
 
   @@map("chat_type")
+}
+
+// =============================================================================
+// FAZ 7: NOTIFICATIONS & MODERATION
+// =============================================================================
+
+enum NotificationType {
+  friend_request
+  friend_accepted
+  ticket_purchased
+  ticket_gifted
+  event_reminder
+  event_cancelled
+  event_updated
+  message_received
+  chat_mention
+  payment_refunded
+  broadcast
+
+  @@map("notification_type")
+}
+
+enum NotificationStatus {
+  unread
+  read
+
+  @@map("notification_status")
+}
+
+enum ReportEntityType {
+  message
+  user
+  event
+  review
+
+  @@map("report_entity_type")
+}
+
+enum ReportStatus {
+  pending
+  resolved
+  dismissed
+
+  @@map("report_status")
+}
+
+enum ReportActionType {
+  warning
+  message_deleted
+  user_banned
+  none
+
+  @@map("report_action_type")
+}
+
+model Notification {
+  id        String             @id @default(uuid())
+  userId    String             @map("user_id")
+  type      NotificationType
+  title     String
+  body      String
+  data      Json               @default("{}")
+  actionUrl String?            @map("action_url")
+  status    NotificationStatus @default(unread)
+  readAt    DateTime?          @map("read_at")
+  sentVia   Json               @default("[\"in_app\"]") @map("sent_via")
+  expiresAt DateTime?          @map("expires_at")
+  createdAt DateTime           @default(now()) @map("created_at")
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([expiresAt])
+  @@map("notifications")
+}
+
+model Report {
+  id           String           @id @default(uuid())
+  organizerId  String           @map("organizer_id")
+  reportedById String           @map("reported_by")
+  entityType   ReportEntityType @map("entity_type")
+  entityId     String           @map("entity_id")
+  reason       String
+  description  String?
+  status       ReportStatus     @default(pending)
+  actionTaken  ReportActionType? @map("action_taken")
+  actionNote   String?          @map("action_note")
+  resolvedAt   DateTime?        @map("resolved_at")
+  resolvedById String?          @map("resolved_by")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  organizer    Organizer        @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  reportedBy   User             @relation("ReportedBy", fields: [reportedById], references: [id], onDelete: Cascade)
+  resolvedBy   User?            @relation("ResolvedBy", fields: [resolvedById], references: [id])
+
+  @@unique([reportedById, entityType, entityId])
+  @@index([organizerId, status])
+  @@index([entityType, entityId])
+  @@map("reports")
+}
+
+model ModerationFilter {
+  id              String    @id @default(uuid())
+  organizerId     String    @unique @map("organizer_id")
+  blockedWords    String[]  @default([]) @map("blocked_words")
+  blockedPatterns String[]  @default([]) @map("blocked_patterns")
+  spamProtection  Boolean   @default(true) @map("spam_protection")
+  mediaFilter     Boolean   @default(false) @map("media_filter")
+  linkFilter      Boolean   @default(false) @map("link_filter")
+  autoActions     Json      @default("{}") @map("auto_actions")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  organizer       Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+
+  @@map("moderation_filters")
+}
+
+model SpamTracker {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  chatRoomId  String   @map("chat_room_id")
+  messageHash String   @map("message_hash")
+  count       Int      @default(1)
+  firstSentAt DateTime @default(now()) @map("first_sent_at")
+  lastSentAt  DateTime @default(now()) @map("last_sent_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatRoom    ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chatRoomId, messageHash])
+  @@index([userId, chatRoomId, lastSentAt])
+  @@map("spam_trackers")
 }

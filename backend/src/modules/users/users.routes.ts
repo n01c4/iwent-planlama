@@ -87,37 +87,9 @@ export async function usersRoutes(app: FastifyInstance): Promise<void> {
     });
   });
 
-  /**
-   * GET /users/me/notifications
-   * Get current user's notifications (placeholder)
-   */
-  app.get('/me/notifications', {
-    preHandler: [requireAuth],
-  }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const query = request.query as { status?: 'unread' | 'all' };
-    const notifications = await usersService.getUserNotifications(request.user!.sub, query.status);
-
-    return reply.send({
-      success: true,
-      data: notifications,
-    });
-  });
-
-  /**
-   * POST /users/me/notifications/read
-   * Mark notifications as read (placeholder)
-   */
-  app.post('/me/notifications/read', {
-    preHandler: [requireAuth],
-  }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const body = request.body as { ids?: string[]; all?: boolean };
-    const result = await usersService.markNotificationsRead(request.user!.sub, body.ids, body.all);
-
-    return reply.send({
-      success: true,
-      data: result,
-    });
-  });
+  // Note: Notification endpoints are now handled by the notifications module
+  // GET /users/me/notifications -> notifications.routes.ts
+  // POST /users/me/notifications -> notifications.routes.ts
 
   /**
    * GET /users/me/calendar
@@ -184,9 +156,8 @@ export async function usersRoutes(app: FastifyInstance): Promise<void> {
       'PATCH /me',
       'GET /me/tickets',
       'GET /me/orders',
-      'GET /me/notifications',
-      'POST /me/notifications/read',
       'GET /me/calendar',
+      'GET /me/following/artists',
       'GET /:userId',
     ],
   }));
